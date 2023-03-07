@@ -1,0 +1,14 @@
+"basewars2"
+{
+	"base"		"sandbox"
+	"title"		"BaseWars 2"
+	"version"		"2"
+	"description"	"Build bases with teammates and then raid others."
+	"author_name"	"Richard"
+	"author_url"	"https://github.com/im-richard/"
+	"icon"		""
+	"info"		""
+	"hide"		"0"
+	"menusystem"	"1"
+	"selectable"	"1"
+}
