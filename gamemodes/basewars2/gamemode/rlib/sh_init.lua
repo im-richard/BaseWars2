@@ -43,7 +43,7 @@ local storage               = rlib.s
 local sf                    = string.format
 
 /*
-*   Localized translation func
+    Localized translation func
 */
 
 local function lang( ... )
@@ -51,7 +51,7 @@ local function lang( ... )
 end
 
 /*
-*	prefix ids
+    prefix ids
 */
 
 local function pid( str, suffix )
@@ -60,7 +60,7 @@ local function pid( str, suffix )
 end
 
 /*
-*   module loader statistics
+    module loader statistics
 */
 
 local function modules_cstats( )
@@ -73,12 +73,12 @@ local function modules_cstats( )
 end
 
 /*
-*   bHasModule
-*
-*   check if the specified module is valid or not
-*
-*   @param  : tbl, str mod
-*   @return : bool
+    bHasModule
+
+    check if the specified module is valid or not
+
+    @param  : tbl, str mod
+    @return : bool
 */
 
 function base:bHasModule( mod )
@@ -92,14 +92,14 @@ function base:bHasModule( mod )
 end
 
 /*
-*   bHasModule > throw error
-*
-*   checks to see if a module is valid, if not, returns an error the player who utilized a feature
-*   associated to failed module.
-*
-*   @param  : tbl, str mod
-*   @param  : ply ply
-*   @return : bool
+    bHasModule > throw error
+
+    checks to see if a module is valid, if not, returns an error the player who utilized a feature
+    associated to failed module.
+
+    @param  : tbl, str mod
+    @param  : ply ply
+    @return : bool
 */
 
 function base:bHasModule_throwError( mod, ply )
@@ -115,32 +115,32 @@ function base:bHasModule_throwError( mod, ply )
 end
 
 /*
-*   modules > autoloader > configs
-*
-*   once a valid manifest file has been located, this function will be called to load all of the other
-*   files assoc to the specified module.
-*
-*   @ex     : base:autoloader_configs( 'modules/identix', 'identix' )
-*
-*   @param  : str loc
-*   @param  : str mod_id
+    modules > autoloader > configs
+
+    once a valid manifest file has been located, this function will be called to load all of the other
+    files assoc to the specified module.
+
+    @ex     : base:autoloader_configs( 'modules/identix', 'identix' )
+
+    @param  : str loc
+    @param  : str mod_id
 */
 
 function base:autoloader_configs( loc, mod_id )
 
     /*
-    *   modules > autoloader > configs > load_cfg
-    *
-    *   loads the specified file provided when looking through existing
-    *   files and folders
-    *
-    *   recursive
-    *
-    *   @ex     : load_cfg( 'path/to/folder', file.cfg, 'identix' )
-    *
-    *   @param  : str path
-    *   @param  : str File
-    *   @param  : str mod_id
+        modules > autoloader > configs > load_cfg
+
+        loads the specified file provided when looking through existing
+        files and folders
+
+        recursive
+
+        @ex     : load_cfg( 'path/to/folder', file.cfg, 'identix' )
+
+        @param  : str path
+        @param  : str File
+        @param  : str mod_id
     */
 
     local function load_cfg( path, File, mod )
@@ -185,32 +185,32 @@ function base:autoloader_configs( loc, mod_id )
 end
 
 /*
-*   modules > autoloader > assoc files
-*
-*   loads any files / folders assoc to the specified module. This should be done after the manifest
-*   and config files have already been registered with the system.
-*
-*   recursive subfolders supported
-*
-*   @assoc  : base:autoloader_modules( loc, module_id, b_isext )
-*   @ex     : base:modules_attachfile( 'lunera' )
-*
-*   @param  : str loc
-*   @param  : bool b_isext
-*   @return : void
+    modules > autoloader > assoc files
+
+    loads any files / folders assoc to the specified module. This should be done after the manifest
+    and config files have already been registered with the system.
+
+    recursive subfolders supported
+
+    @assoc  : base:autoloader_modules( loc, module_id, b_isext )
+    @ex     : base:modules_attachfile( 'lunera' )
+
+    @param  : str loc
+    @param  : bool b_isext
+    @return : void
 */
 
 function base:modules_attachfile( loc, b_isext )
 
     /*
-    *   define base path
+        define base path
     */
 
     local modpath                   = GM.FolderName .. '/gamemode/' .. mf.modpath
     local path_base                 = b_isext and loc or modpath
 
     /*
-    *   module autoloader > SERVER
+        module autoloader > SERVER
     */
 
     if SERVER then
@@ -218,7 +218,7 @@ function base:modules_attachfile( loc, b_isext )
         local files, dirs = file.Find( path_base .. '/*', 'LUA' )
 
         /*
-        *   module autoloader > serverside -> shared
+            module autoloader > serverside -> shared
         */
 
         local function inc_sv( path_root, id, term )
@@ -255,7 +255,7 @@ function base:modules_attachfile( loc, b_isext )
         end
 
         /*
-        *   module autoloader > serverside -> load
+            module autoloader > serverside -> load
         */
 
         for _, dir in SortedPairs( dirs, true ) do
@@ -273,7 +273,7 @@ function base:modules_attachfile( loc, b_isext )
     end
 
     /*
-    *   module autoloader > CLIENT
+        module autoloader > CLIENT
     */
 
     if CLIENT then
@@ -281,7 +281,7 @@ function base:modules_attachfile( loc, b_isext )
         local files, dirs = file.Find( path_base .. '/*', 'LUA' )
 
         /*
-        *   module autoloader > clintside -> shared
+            module autoloader > clintside -> shared
         */
 
         local function inc_cl( path_root, id, term )
@@ -313,7 +313,7 @@ function base:modules_attachfile( loc, b_isext )
         end
 
         /*
-        *   module autoloader > clintside -> load
+            module autoloader > clintside -> load
         */
 
         for _, dir in SortedPairs( dirs, true ) do
@@ -332,17 +332,17 @@ function base:modules_attachfile( loc, b_isext )
 end
 
 /*
-*   modules > autoloader
-*
-*   once a valid manifest file has been located, this function will be called to load all of the other
-*   files associated to the specified module.
-*
-*   @ex     : loc => modules/footprints/, mod_id => footprints
-*
-*   @param  : str loc
-*   @param  : str mod_id
-*   @param  : bool b_istext
-*   @return : void
+    modules > autoloader
+
+    once a valid manifest file has been located, this function will be called to load all of the other
+    files associated to the specified module.
+
+    @ex     : loc => modules/footprints/, mod_id => footprints
+
+    @param  : str loc
+    @param  : str mod_id
+    @param  : bool b_istext
+    @return : void
 */
 
 function base:autoloader_modules( loc, mod_id, b_isext )
@@ -352,9 +352,9 @@ function base:autoloader_modules( loc, mod_id, b_isext )
 end
 
 /*
-*   modules > autoloader > manifest
-*
-*   loads of the modules manifest file and registers the data associated to the specified module.
+    modules > autoloader > manifest
+
+    loads of the modules manifest file and registers the data associated to the specified module.
 */
 
 local function autoloader_manifest_modules( )
@@ -366,8 +366,8 @@ local function autoloader_manifest_modules( )
     local _, dirs       = file.Find( folder .. '*', 'LUA' )
 
     /*
-     *   prioritized loading for certain modules ( ie: base )
-    *   usually configured in `lua\rlib\sh_config.lua`
+        prioritized loading for certain modules ( ie: base )
+        usually configured in `lua\rlib\sh_config.lua`
     */
 
     for k, v in pairs( base.sys.loadpriority ) do
@@ -387,7 +387,7 @@ local function autoloader_manifest_modules( )
     end
 
     /*
-    *   load the remainder of the modules not included in the module prioritizer.
+        load the remainder of the modules not included in the module prioritizer.
     */
 
     local _, sub_dir = file.Find( folder .. '/' .. '*', 'LUA' )
@@ -408,7 +408,7 @@ local function autoloader_manifest_modules( )
     end
 
     /*
-    *   garbage cleanup
+        garbage cleanup
     */
 
     storage.garbage( 'autoloader_manifest_modules', { base.sys.loadpriority, sys.loadtime } )
@@ -416,15 +416,15 @@ local function autoloader_manifest_modules( )
 end
 
 /*
-*   modules > prefix
-*
-*   used for various things such as font names, etc.
-*
-*   @ex     : base:modules_prefix( mod )
-*
-*   @param  : tbl mod
-*   @param  : str suffix
-*   @return : str
+    modules > prefix
+
+    used for various things such as font names, etc.
+
+    @ex     : base:modules_prefix( mod )
+
+    @param  : tbl mod
+    @param  : str suffix
+    @return : str
 */
 
 function base:modules_prefix( mod, suffix )
@@ -439,14 +439,14 @@ function base:modules_prefix( mod, suffix )
 end
 
 /*
-*   modules > settings
-*
-*   returns the module settings
-*
-*   @ex     : base:modules_settings( mod )
-*
-*   @param  : tbl, str mod
-*   @return : tbl
+    modules > settings
+
+    returns the module settings
+
+    @ex     : base:modules_settings( mod )
+
+    @param  : tbl, str mod
+    @return : tbl
 */
 
 function base:modules_settings( mod )
@@ -473,13 +473,13 @@ function base:modules_settings( mod )
 end
 
 /*
-*   load module
-*
-*   returns valid data on a particular module and the correct prefix
-*
-*   @param  : str mod
-*   @param  : bool bPrefix
-*   @return : tbl, str
+    load module
+
+    returns valid data on a particular module and the correct prefix
+
+    @param  : str mod
+    @param  : bool bPrefix
+    @return : tbl, str
 */
 
 function base:modules_load( mod, bPrefix )
@@ -501,18 +501,18 @@ function base:modules_load( mod, bPrefix )
 end
 
 /*
-*   modules > in demo mode
-*
-*   checks to see if module is in demo mode
-*   this mode is typically used by the developer to setup specific settings and features a certain way
-*   so they can be presented to the public.
-*
-*   demo mode can be set in the modules manifest file
-*
-*   enabling this will cause a warning to display in console
-*
-*   @param  : tbl, str mod
-*   @return : bool
+    modules > in demo mode
+
+    checks to see if module is in demo mode
+    this mode is typically used by the developer to setup specific settings and features a certain way
+    so they can be presented to the public.
+
+    demo mode can be set in the modules manifest file
+
+    enabling this will cause a warning to display in console
+
+    @param  : tbl, str mod
+    @return : bool
 */
 
 function base:bInDemoMode( mod )
@@ -526,25 +526,25 @@ function base:bInDemoMode( mod )
 end
 
 /*
-*   modules > logging
-*
-*   log module information to the data folder
-*       /rlib/modules/[module_name]/
-*
-*   to write a log to another directory not associated to
-*       /rlib/modules => rlib => konsole:log( path, cat, data )
-*
-*   files in the directory are created based on the current date. a new file will be made if a log is
-*   submitted on a day where no file with that date exists.
-*
-*   param bPostnow will instantly push msg to konsole
-*
-*   @ex     : base:log( 'xp', 1, 'information to log' )
-*
-*   @param  : tbl, str mod
-*   @param  : int cat
-*   @param  : str msg
-*   @param  : varg varg
+    modules > logging
+
+    log module information to the data folder
+        /rlib/modules/[module_name]/
+
+    to write a log to another directory not associated to
+        /rlib/modules => rlib => konsole:log( path, cat, data )
+
+    files in the directory are created based on the current date. a new file will be made if a log is
+    submitted on a day where no file with that date exists.
+
+    param bPostnow will instantly push msg to konsole
+
+    @ex     : base:log( 'xp', 1, 'information to log' )
+
+    @param  : tbl, str mod
+    @param  : int cat
+    @param  : str msg
+    @param  : varg varg
 */
 
 function base:log( mod, cat, msg, ... )
@@ -564,7 +564,7 @@ function base:log( mod, cat, msg, ... )
         if self.modules[ mod ] and self.modules[ mod ].enabled then
 
             /*
-            *   valid module > string
+                valid module > string
             */
 
             bLoaded         = true
@@ -572,7 +572,7 @@ function base:log( mod, cat, msg, ... )
         else
 
             /*
-            *   custom folder > string
+                custom folder > string
             */
 
             bLoaded         = true
@@ -614,11 +614,11 @@ function base:log( mod, cat, msg, ... )
 end
 
 /*
-*   modules > storage
-*
-*   will create any required folders needed by the module to store certain data
-*
-*   @param  : tbl source
+    modules > storage
+
+    will create any required folders needed by the module to store certain data
+
+    @param  : tbl source
 */
 
 function base:modules_storage( source )
@@ -631,12 +631,12 @@ function base:modules_storage( source )
     source = source or base.modules
 
     /*
-    *   modules > storage > create data dir
-    *
-    *   creates the requested folders in the data directory
-    *
-    *   @param  : tbl data
-    *   @param  : str mod_id
+        modules > storage > create data dir
+
+        creates the requested folders in the data directory
+
+        @param  : tbl data
+        @param  : str mod_id
     */
 
     local function cdatafolder( data, mod_id )
@@ -675,14 +675,14 @@ function base:modules_storage( source )
     end
 
 end
-rhook.new.gmod( 'PostGamemodeLoaded', 'rcore_modules_storage', function( source ) base:modules_storage( source ) end )
+rhook.new.gmod( 'PostGamemodeLoaded', 'bw2_modules_storage', function( source ) base:modules_storage( source ) end )
 
 /*
-*   modules > precache
-*
-*   precache any valid models and sounds associated to entities
-*
-*   @param  : tbl source
+    modules > precache
+
+    precache any valid models and sounds associated to entities
+
+    @param  : tbl source
 */
 
 function base:Precache( source )
@@ -694,7 +694,7 @@ function base:Precache( source )
     source = source or base.modules
 
     /*
-    *   precache various items such as sounds, models, particles
+        precache various items such as sounds, models, particles
     */
 
     for v in helper.get.data( source ) do
@@ -705,7 +705,7 @@ function base:Precache( source )
             if isfunction( m ) then continue end
 
             /*
-            *   models > string
+                models > string
             */
 
             if isstring( m.model ) or isstring( m.mdl ) then
@@ -714,7 +714,7 @@ function base:Precache( source )
             end
 
             /*
-            *   models > table
+                models > table
             */
 
             if istable( m.model ) or istable( m.mdl ) then
@@ -725,7 +725,7 @@ function base:Precache( source )
             end
 
             /*
-            *   sounds > string
+                sounds > string
             */
 
             if isstring( m.sound ) or isstring( m.snd ) then
@@ -734,7 +734,7 @@ function base:Precache( source )
             end
 
             /*
-            *   sounds > table
+                sounds > table
             */
 
             if istable( m.sound ) or istable( m.snd ) then
@@ -745,7 +745,7 @@ function base:Precache( source )
             end
 
             /*
-            *   particles > string
+                particles > string
             */
 
             if isstring( m.particles ) or isstring( m.ptc ) then
@@ -754,7 +754,7 @@ function base:Precache( source )
             end
 
             /*
-            *   particles > table
+                particles > table
             */
 
             if istable( m.particles ) or istable( m.ptc ) then
@@ -765,7 +765,7 @@ function base:Precache( source )
             end
 
             /*
-            *   particles > precache > table
+                particles > precache > table
             */
 
             if istable( m.particles_pc ) or istable( m.ptc_pc ) then
@@ -778,14 +778,14 @@ function base:Precache( source )
         end
     end
 end
-rhook.new.gmod( 'PostGamemodeLoaded', 'rcore_modules_precache', function( source ) base:Precache( source ) end )
+rhook.new.gmod( 'PostGamemodeLoaded', 'bw2_modules_precache', function( source ) base:Precache( source ) end )
 
 /*
-*   modules > dependency check
-*
-*   check to see if a module has the proper dependencies
-*
-*   @param  : tbl source
+    modules > dependency check
+
+    check to see if a module has the proper dependencies
+
+    @param  : tbl source
 */
 
 local function module_dependencies( source )
@@ -816,17 +816,17 @@ local function module_dependencies( source )
         end
     end
 end
-rhook.new.gmod( 'PostGamemodeLoaded', 'rcore_modules_dependencies', module_dependencies )
+rhook.new.gmod( 'PostGamemodeLoaded', 'bw2_modules_dependencies', module_dependencies )
 
 /*
-*   module > register > content
-*
-*   register each workshop assocaited to a module
-*   mounts fastdl content
-*
-*   @assoc  : modules.load.post
-*
-*   @param  : tbl source
+    module > register > content
+
+    register each workshop assocaited to a module
+    mounts fastdl content
+
+    @assoc  : modules.load.post
+
+    @param  : tbl source
 */
 
 local function module_register_content( source )
@@ -944,21 +944,21 @@ local function module_register_content( source )
     end
 
 end
-rhook.new.rlib( 'rcore_modules_load_post', 'rcore_modules_res_register', module_register_content )
+rhook.new.rlib( 'bw2_modules_load_post', 'bw2_modules_res_register', module_register_content )
 
 /*
-*   module > register > particles
-*
-*   registers particles for each module
-*   particles should be defined in the module manifest file
-*       :   MODULE.particles
-*
-*   entries that include .pcf at the end will mount using game.AddParticles
-*   entries without the pcf extension will use PrecacheParticleSystem
-*
-*   @assoc  : modules.load.post
-*
-*   @param  : tbl source
+    module > register > particles
+
+    registers particles for each module
+    particles should be defined in the module manifest file
+        :   MODULE.particles
+
+    entries that include .pcf at the end will mount using game.AddParticles
+    entries without the pcf extension will use PrecacheParticleSystem
+
+    @assoc  : modules.load.post
+
+    @param  : tbl source
 */
 
 local function module_register_ptc( source )
@@ -975,8 +975,8 @@ local function module_register_ptc( source )
         if not v.id or not v.enabled then continue end
 
         /*
-        *   workshop resources
-        *   determined through the module manifest file.
+            workshop resources
+            determined through the module manifest file.
         */
 
         if v.particles then
@@ -991,18 +991,18 @@ local function module_register_ptc( source )
     end
 
 end
-rhook.new.rlib( 'rcore_modules_load_post', 'rcore_modules_ptc_register', module_register_ptc )
+rhook.new.rlib( 'bw2_modules_load_post', 'bw2_modules_ptc_register', module_register_ptc )
 
 /*
-*   module > register > sounds
-*
-*   registers sounds for each module
-*   particles should be defined in the module manifest file
-*       :   MODULE.sounds
-*
-*   @assoc  : modules.load.post
-*
-*   @param  : tbl source
+    module > register > sounds
+
+    registers sounds for each module
+    particles should be defined in the module manifest file
+        :   MODULE.sounds
+
+    @assoc  : modules.load.post
+
+    @param  : tbl source
 */
 
 local function module_register_snds( source )
@@ -1019,8 +1019,8 @@ local function module_register_snds( source )
         if not v.id or not v.enabled then continue end
 
         /*
-        *   workshop resources
-        *   determined through the module manifest file.
+            workshop resources
+            determined through the module manifest file.
         */
 
         if v.sounds then
@@ -1035,12 +1035,12 @@ local function module_register_snds( source )
     end
 
 end
-rhook.new.rlib( 'rcore_modules_load_post', 'rcore_modules_snd_register', module_register_snds )
+rhook.new.rlib( 'bw2_modules_load_post', 'bw2_modules_snd_register', module_register_snds )
 
 /*
-*   library > mount content
-*
-*   mounts library workshops and fastdl
+    library > mount content
+
+    mounts library workshops and fastdl
 */
 
 local function lib_mount_content( )
@@ -1107,12 +1107,12 @@ local function lib_mount_content( )
     end
 
     /*
-    *   workshop
-    *
-    *   determines if the script should handle content related to the script via Steam Workshop or FastDL.
-    *
-    *       : settings.useworkshop MUST be true
-    *       : manifest.bWorkshops [ table ] must contain valid steam collection ids
+        workshop
+
+        determines if the script should handle content related to the script via Steam Workshop or FastDL.
+
+            : settings.useworkshop MUST be true
+            : manifest.bWorkshops [ table ] must contain valid steam collection ids
     */
 
     if cfg.ws_enabled and mf.workshops then
@@ -1144,16 +1144,16 @@ local function lib_mount_content( )
     end
 
 end
-rhook.new.rlib( 'rcore_onloaded', 'rcore_mount_lib', lib_mount_content )
+rhook.new.rlib( 'bw2_modules_onloaded', 'bw2_mount_lib', lib_mount_content )
 
 /*
-*   modules > storage > register defaults
-*
-*   register default storage tables
-*
-*   @ex     : rhook.run.rlib( 'rcore_modules_storage_struct', mod_id )
-*
-*   @param  : tbl source
+    modules > storage > register defaults
+
+    register default storage tables
+
+    @ex     : rhook.run.rlib( 'bw2_modules_storage_struct', mod_id )
+
+    @param  : tbl source
 */
 
 local function storage_struct_defs( mod_id )
@@ -1166,7 +1166,7 @@ local function storage_struct_defs( mod_id )
     local source = base.modules
 
     /*
-    *   storage > sh > base
+        storage > sh > base
     */
 
     local storage_sh_b =
@@ -1192,7 +1192,7 @@ local function storage_struct_defs( mod_id )
     end
 
     /*
-    *   storage > cl > base
+        storage > cl > base
     */
 
     if CLIENT then
@@ -1209,7 +1209,7 @@ local function storage_struct_defs( mod_id )
     end
 
     /*
-    *   storage > sh > cfg
+        storage > sh > cfg
     */
 
     local storage_sh_c =
@@ -1266,18 +1266,18 @@ local function storage_struct_defs( mod_id )
     end
 
 end
-rhook.new.rlib( 'rcore_modules_storage_struct', storage_struct_defs )
+rhook.new.rlib( 'bw2_modules_storage_struct', storage_struct_defs )
 
 /*
-*   register module
-*
-*   registers a module with the gamemode
-*
-*   @ex     : path => modules/tools, mod => sh_tools_manifest.lua
-*
-*   @param  : str path
-*   @param  : str mod
-*   @param  : bool b_isext
+    register module
+
+    registers a module with the gamemode
+
+    @ex     : path => modules/tools, mod => sh_tools_manifest.lua
+
+    @param  : str path
+    @param  : str mod
+    @param  : bool b_isext
 */
 
 function base:Register( path, mod, b_isext )
@@ -1289,12 +1289,12 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   define > module
-    *
-    *   var( _ENV )         : blank table
-    *   var( manifest )     : modules/base/sh_env.lua
-    *   var( plugins )      : modules/base/plugins/sh_env.lua
-    *   var( tmp_id )       : sh_env
+        define > module
+
+        var( _ENV )         : blank table
+        var( manifest )     : modules/base/sh_env.lua
+        var( plugins )      : modules/base/plugins/sh_env.lua
+        var( tmp_id )       : sh_env
     */
 
     local _ENV              = { }
@@ -1322,9 +1322,9 @@ function base:Register( path, mod, b_isext )
                             end
 
     /*
-    *   compile env / manifest
-    *
-    *   var( manifest )     : modules/base/sh_env.lua
+        compile env / manifest
+
+        var( manifest )     : modules/base/sh_env.lua
     */
 
     local module_exec       = CompileFile( manifest )
@@ -1337,7 +1337,7 @@ function base:Register( path, mod, b_isext )
                             end
 
     /*
-    *   module not enabled
+        module not enabled
     */
 
     if not smt.MODULE.enabled then
@@ -1347,16 +1347,16 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   set environment > MODULE
-    *
-    *   must be executed before plugins can be registered
+        set environment > MODULE
+
+        must be executed before plugins can be registered
     */
 
     debug.setfenv( module_exec, _ENV )
     module_exec( )
 
     /*
-    *   plugins
+        plugins
     */
 
     if file.Exists( plugins, 'LUA' ) then
@@ -1368,10 +1368,10 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   set module values
-    *
-    *   mod.modules[ 'module_id' ]
-    *   mod.modules[ 'lunera' ]
+        set module values
+
+        mod.modules[ 'module_id' ]
+        mod.modules[ 'lunera' ]
     */
 
     local mod_id                                = smt.MODULE.id
@@ -1393,7 +1393,7 @@ function base:Register( path, mod, b_isext )
     rlib:log( RLIB_LOG_DEBUG, lang( 'logs_rcore_mnfst_ok', mod ) )
 
     /*
-    *   require
+        require
     */
 
     if istable( smt.MODULE.req ) then
@@ -1407,7 +1407,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   create storage tables > shared
+        create storage tables > shared
     */
 
     if smt.MODULE.storage and istable( smt.MODULE.storage ) then
@@ -1421,7 +1421,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   create storage tables > client
+        create storage tables > client
     */
 
     if CLIENT and smt.MODULE.storage_cl and istable( smt.MODULE.storage_cl ) then
@@ -1432,7 +1432,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   create storage tables > server
+        create storage tables > server
     */
 
     if SERVER and istable( smt.MODULE.storage_sv ) then
@@ -1443,7 +1443,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   add single
+        add single
     */
 
     if SERVER and istable( smt.MODULE.addsingle ) then
@@ -1454,7 +1454,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   addfile
+        addfile
     */
 
     if SERVER and istable( smt.MODULE.addfile ) then
@@ -1465,21 +1465,21 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   create default storage tables
-    *   these tables will be automatically created for every module to help save
-    *   on repetitiveness of declaring these in the module manifest file
+        create default storage tables
+        these tables will be automatically created for every module to help save
+        on repetitiveness of declaring these in the module manifest file
     */
 
-    rhook.run.rlib( 'rcore_modules_storage_struct', mod_id )
+    rhook.run.rlib( 'bw2_modules_storage_struct', mod_id )
 
     /*
-    *   module sys tbl
+        module sys tbl
     */
 
     smt.MODULE.sys = smt.MODULE.sys or { }
 
     /*
-    *   create log folders
+        create log folders
     */
 
     if SERVER and smt.MODULE.logging then
@@ -1488,7 +1488,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   create datafolders
+        create datafolders
     */
 
     if SERVER and smt.MODULE.datafolder and istable( smt.MODULE.datafolder ) then
@@ -1503,7 +1503,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   register calls
+        register calls
     */
 
     if smt.MODULE.calls then
@@ -1511,7 +1511,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   register resources
+        register resources
     */
 
     if smt.MODULE.resources then
@@ -1519,7 +1519,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   sql tables
+        sql tables
     */
 
     if SERVER and ( smt.MODULE.ext or smt.MODULE.dbconn ) then
@@ -1528,7 +1528,7 @@ function base:Register( path, mod, b_isext )
     end
 
     /*
-    *   load other files in module after good manifest found
+        load other files in module after good manifest found
     */
 
     self:autoloader_configs( path, mod_id )
@@ -1593,12 +1593,12 @@ function base:Register( path, mod, b_isext )
     _G[ mod_id ] = nil
 
 end
-rhook.new.rlib( 'rcore_modules_register', base.Register )
+rhook.new.rlib( 'bw2_modules_register', base.Register )
 
 /*
-*   modules > initialize
-*
-*   start loading all required modules
+    modules > initialize
+
+    start loading all required modules
 */
 
 function base:modules_initialize( pl )
@@ -1606,7 +1606,7 @@ function base:modules_initialize( pl )
         rlib:log( RLIB_LOG_SYSTEM, 'Reloading modules, please wait ...' )
     end
 
-    rhook.run.rlib( 'rcore_modules_load_pre' )
+    rhook.run.rlib( 'bw2_modules_load_pre' )
 
     autoloader_manifest_modules( )
 
@@ -1622,10 +1622,10 @@ function base:modules_initialize( pl )
 
     rlib:log( 0 )
 
-    rhook.run.rlib( 'rcore_modules_load_post', base.modules )
-    rhook.run.rlib( 'rcore_onloaded' )
+    rhook.run.rlib( 'bw2_modules_load_post', base.modules )
+    rhook.run.rlib( 'bw2_modules_onloaded' )
 
 end
-rhook.new.rlib( 'rcore_loader_post', 'rcore_modules_initialize', base.modules_initialize )
-rhook.new.gmod( 'OnReloaded', 'rcore_modules_onreload', base.modules_initialize )
+rhook.new.rlib( 'bw2_loader_post', 'bw2_modules_initialize', base.modules_initialize )
+rhook.new.gmod( 'OnReloaded', 'bw2_modules_onreload', base.modules_initialize )
 rcc.new.rlib( 'rlib_modules_reload', base.modules_initialize )

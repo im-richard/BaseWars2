@@ -95,7 +95,7 @@ local function module_writedata( )
 
     file.Write( storage.mft:getpath( 'data_manifest' ), util.TableToJSON( mnfst ) )
 end
-rhook.new.rlib( 'rcore_modules_load_post', 'rcore_modules_writedata', module_writedata )
+rhook.new.rlib( 'bw2_modules_load_post', 'bw2_modules_writedata', module_writedata )
 
 /*
     module > validate
@@ -108,7 +108,7 @@ rhook.new.rlib( 'rcore_modules_load_post', 'rcore_modules_writedata', module_wri
 */
 
 local function module_validate( source, bBypass )
-    timex.simple( 'rcore_modules_validate', 0, function( )
+    timex.simple( 'bw2_modules_validate', 0, function( )
         if source and not istable( source ) then
             local trcback = debug.traceback( )
             rlib:log( 2, 'cannot validate module, bad table\n[%s]', trcback )
@@ -175,7 +175,7 @@ local function module_validate( source, bBypass )
         end
     end )
 end
-rhook.new.gmod( 'Initialize', 'rcore_modules_validate', module_validate )
+rhook.new.gmod( 'Initialize', 'bw2_modules_validate', module_validate )
 
 /*
 *   module > register > permissions
@@ -199,7 +199,7 @@ local function module_register_perms( source )
         rlib.a:initialize( v.permissions )
     end
 end
-rhook.new.gmod( 'PostGamemodeLoaded', 'rcore_modules_perms_register', module_register_perms )
+rhook.new.gmod( 'PostGamemodeLoaded', 'bw2_modules_perms_register', module_register_perms )
 
 /*
 *   initialize > stats

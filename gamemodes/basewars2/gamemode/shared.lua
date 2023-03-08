@@ -54,12 +54,6 @@ rcore.manifest              = rcore.manifest        or { }
 function rcore.autoload:Run( )
 
     /*
-        hook > loader > pre
-    */
-
-    hook.Run( 'bw2_loader_pre' )
-
-    /*
         core information
     */
 
@@ -474,15 +468,7 @@ function rcore.autoload:Run( )
         hook > rcore post loader
     */
 
-    rhook.run.rlib( 'rcore_loader_post' )
-
-    /*
-        hook > loader > pre
-    */
-
-    if SERVER then
-        hook.Run( 'bw2_loader_post' )
-    end
+    rhook.run.rlib( 'bw2_loader_post' )
 
 end
 
