@@ -55,3 +55,13 @@ local function pref( str, suffix )
     local state = not suffix and mod or isstring( suffix ) and suffix or false
     return base.get:pref( str, state )
 end
+
+local function asdasd( )
+    print('aaaaaaaaaaaaa')
+end
+hook.Add("bw2_loader_pre", "bw_initialize_hook", asdasd )
+
+local function asdasdads( )
+    print('bbbbbbbbbbbb')
+end
+hook.Add("bw2_loader_post", "sdasdadasfasf", asdasdads )

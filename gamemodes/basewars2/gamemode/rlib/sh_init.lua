@@ -206,7 +206,8 @@ function base:modules_attachfile( loc, b_isext )
     *   define base path
     */
 
-    local path_base = b_isext and loc or mf.modpath
+    local modpath                   = GM.FolderName .. '/gamemode/' .. mf.modpath
+    local path_base                 = b_isext and loc or modpath
 
     /*
     *   module autoloader > SERVER
@@ -361,8 +362,8 @@ local function autoloader_manifest_modules( )
     modules_cstats( )
     base.sys.loadpriority = cfg.loadpriority or { }
 
-    local folder    = mf.modpath
-    local _, dirs   = file.Find( folder .. '*', 'LUA' )
+    local folder        = GM.FolderName .. '/gamemode/' .. mf.modpath
+    local _, dirs       = file.Find( folder .. '*', 'LUA' )
 
     /*
      *   prioritized loading for certain modules ( ie: base )
@@ -894,7 +895,7 @@ local function module_register_content( source )
                 sounds
             */
 
-            local r_path = mf.modpath
+            local r_path = GM.FolderName .. '/gamemode/' .. mf.modpath
             local d_path = r_path .. '/' .. v.id .. '/' .. 'resource'
             if file.IsDir( d_path, 'LUA' ) then
                 storage.data.recurv( v.id, d_path )
