@@ -1,3 +1,2 @@
-DeriveGamemode("sandbox")
+DeriveGamemode( 'sandbox' )
 
-print('include')

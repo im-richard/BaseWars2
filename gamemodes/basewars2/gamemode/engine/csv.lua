@@ -845,8 +845,8 @@ function base.checksum:new( bWrite )
         declarations
     */
 
-    local path_ar       = 'autorun'
-    local path_libs     = sf( '%s/rlib', path_ar )
+    local path_ar       = mf.folder
+    local path_libs     = sf( '%s', path_ar )
     local mdata         = { }
 
     /*
@@ -855,8 +855,8 @@ function base.checksum:new( bWrite )
 
     local i = 0
     local files, dirs = file.Find( path_ar .. '/*', 'LUA' )
-    for k, v in pairs( files ) do
-        if v ~= '_rcore_loader.lua' then continue end
+
+    for k, v in SortedPairs( files ) do
         local dpath = sf( '%s/%s', path_ar, v )
 
         if not file.Exists( dpath, 'LUA' ) then continue end
@@ -866,19 +866,33 @@ function base.checksum:new( bWrite )
 
         mdata[ dpath ]  = sha
 
-        /*
-            autorun/libs/
-        */
+    end
 
-        for l, m in pairs( dirs ) do
-            if m ~= 'rlib' then continue end
-            if not file.Exists( path_libs, 'LUA' ) then continue end
+    for l, m in SortedPairs( dirs ) do
+        if not file.Exists( path_libs .. '/' .. m, 'LUA' ) then continue end
 
-            local fil, dirs = file.Find( path_libs .. '/*', 'LUA' )
-            for f, File in pairs( fil ) do
-                if File == '_autoloader.lua' then continue end
-                if File == 'cfg.lua' or File == 'config.lua' then continue end
-                dpath = sf( '%s/%s', path_libs, File )
+        local fil, dirs2 = file.Find( path_libs .. '/' .. m .. '/*', 'LUA' )
+
+        for f, File in SortedPairs( fil ) do
+            dpath = sf( '%s/%s/%s', path_libs, m, File )
+            if not file.Exists( dpath, 'LUA' ) then continue end
+
+            fpath   = file.Read( dpath, 'LUA' )
+            sha     = sha1.encrypt( fpath )
+
+            mdata[ dpath ]  = sha
+
+            i = i + 1
+        end
+
+        for d, di in SortedPairs( dirs2 ) do
+            local _path = sf( '%s/%s/%s', path_libs, m, di )
+            if not file.Exists( _path, 'LUA' ) then continue end
+
+            local fil3, dirs3 = file.Find( _path .. '/*', 'LUA' )
+
+            for a, b in SortedPairs( fil3 ) do
+                dpath           = sf( '%s/%s/%s/%s', path_libs, m, di, b )
                 if not file.Exists( dpath, 'LUA' ) then continue end
 
                 fpath   = file.Read( dpath, 'LUA' )
@@ -889,28 +903,6 @@ function base.checksum:new( bWrite )
                 i = i + 1
             end
 
-            /*
-                autorun/libs/calls/
-                autorun/libs/interface/
-                autorun/libs/ui/
-                autorun/libs/languages/
-            */
-
-            for _, subdirs in pairs( dirs ) do
-                if subdirs == 'languages' then continue end
-
-                local subfile, subdir = file.Find( path_libs .. '/' .. subdirs .. '/*', 'LUA' )
-                for _, subf in pairs( subfile ) do
-                    dpath   = sf( '%s/%s/%s', path_libs, subdirs, subf )
-                    if not file.Exists( dpath, 'LUA' ) then continue end
-
-                    fpath   = file.Read( dpath, 'LUA' )
-                    sha     = sha1.encrypt( fpath )
-
-                    mdata[ dpath ] = sha
-                    i = i + 1
-                end
-            end
         end
     end
 
@@ -991,8 +983,13 @@ end
 */
 
 function base.checksum:get( bVerified )
-    return ( bVerified and storage.get.json( '.app/checksum.json' ) )
-    or ( storage.exists( storage.mft:getpath( 'data_checksum' ) ) and util.JSONToTable( file.Read( storage.mft:getpath( 'data_checksum' ), 'DATA' ) ) )
+    local app_existing  = storage.get.json( '.app/checksum.json' )
+
+    if bVerified then
+        return app_existing or { }
+    end
+
+    return ( storage.exists( storage.mft:getpath( 'data_checksum' ) ) and util.JSONToTable( file.Read( storage.mft:getpath( 'data_checksum' ), 'DATA' ) ) )
     or { }
 end
 
@@ -1012,12 +1009,25 @@ function base.checksum:verify( )
     local current   = self:new( false )
 
     local data, i = { }, 0
+    if table.IsEmpty( verified ) then
+        for k, v in pairs( verified ) do
+
+            data[ k ] = { }
+            i = i + 1
+        end
+
+        return data, i
+    end
+
+    local data, i = { }, 0
     for v, k in pairs( verified ) do
         for l, m in pairs( current ) do
+
             if l ~= v then continue end
             if k == m then continue end
-            data[ l ] = { current = m, verified = k }
-            i = i + 1
+
+            data[ l ]   = { current = m, verified = k }
+            i           = i + 1
         end
     end
 
@@ -2291,6 +2301,24 @@ function storage.get.json( txt )
         log( 2, ln( 'lib_cfg_invalid' ) )
         return
     end
+
+    /*
+        compatible gamemodes with rlib integrated
+    */
+
+    local gm_fol            = GAMEMODE.FolderName
+    local gm_dir            = sf( '%s/%s', gm_fol, txt )
+
+    if ( file.Exists( gm_dir, 'LUA' ) ) then
+        local values = util.JSONToTable(
+            file.Read( gm_dir, 'LUA' )
+        )
+        return values
+    end
+
+    /*
+        addon version of rlib
+    */
 
     local r_files, r_dirs = file.Find( 'addons/*', 'MOD' )
     for fol in rlib.h.get.data( r_dirs, true ) do

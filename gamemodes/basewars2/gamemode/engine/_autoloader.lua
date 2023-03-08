@@ -54,7 +54,7 @@ function rlib.autoload:Run( parent )
     mf.author                       = 'Richard'
     mf.basecmd                      = 'bw2'
     mf.prefix                       = 'bw2.'
-    mf.folder                       = GM.FolderName .. '/gamemode/autorun/rlib'
+    mf.folder                       = GM.FolderName .. '/gamemode/engine'
     mf.site                         = 'https://rlib.io/'
     mf.repo                         = 'https://git.rlib.io/'
     mf.docs                         = 'https://docs.rlib.io/'

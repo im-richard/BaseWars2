@@ -191,6 +191,20 @@ base.c.commands =
             [ 'filter' ]    = { flag = '-f', desc = 'filter search results' },
         },
     },
+    [ 'rlib_cs_now' ] =
+    {
+        enabled             = true,
+        id                  = 'rlib.cs.now',
+        name                = 'Checksum » Now',
+        desc                = 'shows current checksums',
+        args                = '[ <command> ], [ <-flag> <search_keyword> ]',
+        scope               = 1,
+        official            = true,
+        ex =
+        {
+            'rlib.cs.now',
+        },
+    },
     [ 'rlib_cs_obf' ] =
     {
         enabled             = true,

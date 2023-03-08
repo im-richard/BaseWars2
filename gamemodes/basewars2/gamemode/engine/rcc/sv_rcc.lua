@@ -528,9 +528,21 @@ local function rcc_checksum_verify( pl, cmd, args, str )
         check > see if checksums table valid
     */
 
-    local checksums = base.checksum:verify( )
+    local checksum_file     = base.checksum:get( true )
+
+    if not istable( checksum_file ) and table.IsEmpty( checksum_file ) then
+        con( pl, 1 )
+        con( pl, clr_r, '.app/checksum.json file missing' )
+        con( pl, 1 )
+        return
+    end
+
+    local checksums         = base.checksum:verify( )
+
     if not istable( checksums ) then
-        con( pl, clr_w, ln( 'checksum_validate_fail' ) )
+        con( pl, 1 )
+        con( pl, clr_r, ln( 'checksum_validate_fail' ) )
+        con( pl, 1 )
         return
     end
 
@@ -566,7 +578,7 @@ local function rcc_checksum_verify( pl, cmd, args, str )
         columns
     */
 
-    local l1_l      = sf( '%-40s',    ln( 'col_file'        ) )
+    local l1_l      = sf( '%-60s',    ln( 'col_file'        ) )
     local l2_l      = sf( '%-20s',    ln( 'col_verified'    ) )
     local l3_l      = sf( '%-5s',     ln( 'sym_arrow'       ) )
     local l4_l      = sf( '%-20s',    ln( 'col_current'     ) )
@@ -581,10 +593,10 @@ local function rcc_checksum_verify( pl, cmd, args, str )
         local verified  = v.verified:sub( 1, 15 )
         local current   = v.current:sub( 1, 15 )
 
-        local l1_d      = sf( '%-40s',  k           )
-        local l2_d      = sf( '%-20s',  verified    )
+        local l1_d      = sf( '%-60s',  k           )
+        local l2_d      = sf( '%-20s',  current     )
         local l3_d      = sf( '%-5s',   '»'         )
-        local l4_d      = sf( '%-20s',  current     )
+        local l4_d      = sf( '%-20s',  verified    )
 
         con( pl, clr_y, l1_d, Color( 0, 255, 0 ), l2_d, clr_w, l3_d, clr_r, l4_d )
 
@@ -601,6 +613,114 @@ local function rcc_checksum_verify( pl, cmd, args, str )
 
 end
 rcc.register( 'rlib_cs_verify', rcc_checksum_verify )
+
+/*
+    rcc > checksum > now
+
+    shows current checksums
+*/
+
+local function rcc_checksum_now( pl, cmd, args, str )
+
+    /*
+        define command
+    */
+
+    local ccmd = base.calls:get( 'commands', 'rlib_cs_now' )
+
+    /*
+        scope
+    */
+
+    if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
+        access:deny_consoleonly( pl, script, ccmd.id )
+        return
+    end
+
+    /*
+        perms
+    */
+
+    if not access:bIsDev( pl ) then
+        access:deny_permission( pl, script, ccmd.id )
+        return
+    end
+
+    /*
+        check > see if checksums table valid
+    */
+
+    local checksum_file     = base.checksum:get( true )
+
+    if not istable( checksum_file ) and table.IsEmpty( checksum_file ) then
+        con( pl, 1 )
+        con( pl, clr_r, '.app/checksum.json file missing' )
+        con( pl, 1 )
+        return
+    end
+
+    local checksums         = base.checksum:new( )
+
+    /*
+        output > header
+    */
+
+    local i = table.Count( checksums )
+
+    con( pl, 1 )
+    con( pl, clr_y, script, clr_p, ' » ', clr_w, ln( 'con_checksum_now' ) )
+    con( pl, 0 )
+
+    /*
+        output > check > files verified
+    */
+
+    if i == 0 then
+        con( pl, clr_w, ln( 'files_none' ) )
+        con( pl, 0 )
+        return
+    end
+
+    /*
+        output > subheader
+    */
+
+    con( pl, clr_w, ln( 'files_checksum_now' ) )
+    con( pl, 1 )
+    con( pl, 0 )
+
+    /*
+        columns
+    */
+
+    local l1_l      = sf( '%-60s',      ln( 'col_file'          ) )
+    local l2_l      = sf( '%-10s',      ln( 'sym_arrow'         ) )
+    local l3_l      = sf( '%-60s',      ln( 'col_current'       ) )
+
+    con( pl, clr_w, l1_l, Color( 0, 255, 0 ), l2_l, clr_g, l3_l )
+    con( pl )
+
+    local i = 0
+    for k, v in pairs( checksums ) do
+        local l1_d      = sf( '%-60s',  k           )
+        local l2_d      = sf( '%-10s',  '»'         )
+        local l3_d      = sf( '%-60s',   v          )
+
+        con( pl, clr_y, l1_d, Color( 0, 255, 0 ), l2_d, clr_g, l3_d )
+
+        i = i + 1
+    end
+
+    if i > 0 then
+        con( pl, 0 )
+        con( pl, 1 )
+        con( pl, clr_w, ln( 'files_registered_count', i ) )
+    end
+
+    con( pl, 1 )
+
+end
+rcc.register( 'rlib_cs_now', rcc_checksum_now )
 
 /*
     rcc > checksum > obf
