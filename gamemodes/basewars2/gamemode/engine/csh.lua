@@ -1184,8 +1184,8 @@ function base.package:Register( pkg )
 
     local id = tostring( pkg._NAME )
 
-    self.index = self.index or { }
-    self.index[ id ] =
+    base.packages = base.packages or { }
+    base.packages[ id ] =
     {
         name    = pkg._NAME,
         desc    = pkg.__manifest.desc,

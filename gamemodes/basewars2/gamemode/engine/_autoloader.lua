@@ -36,6 +36,9 @@ rlib.manifest               = rlib.manifest or { }
     execute loader for rlib
     typically called from rcore to start the loading process of rlib itself.
 
+    @note   : changing mf.prefix will cause hooks to not function unless you rename
+              the registered hook ids.
+
     @assoc  : _rcore_loader.lua
     @call   : rlib.autoload:Run( base )
 
@@ -53,9 +56,9 @@ function rlib.autoload:Run( parent )
     mf.name                         = 'Basewars'
     mf.author                       = 'Richard'
     mf.basecmd                      = 'bw2'
-    mf.prefix                       = 'bw2.'
+    mf.prefix                       = 'rlib.'
     mf.folder                       = GM.FolderName .. '/gamemode/engine'
-    mf.site                         = 'https://rlib.io/'
+    mf.site                         = 'https://get.rlib.io/'
     mf.repo                         = 'https://git.rlib.io/'
     mf.docs                         = 'https://docs.rlib.io/'
     mf.about                        = [[rlib is a glua library written for garrys mod which contains a variety of commonly used functions that are required for certain scripts to run properly. Package includes both rlib + rcore which act as the overall foundation which other scripts will rest within as a series of modules. ]]
@@ -418,6 +421,7 @@ loaded and are now ready to install additional modules.
     local modules_lua =
     {
         'sha1',
+        'sha',
         'json',
         'rcir',
         'rmem',

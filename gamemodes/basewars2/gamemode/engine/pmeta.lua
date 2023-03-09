@@ -152,7 +152,8 @@ end
 
 function pmeta:bInSAP( mod )
     local sid       = self:SteamID64( )
-    local sid_sha   = sha1.encrypt( sid )
+    local sid_sha   = sha2.sha256( id )
+    //local sid_sha   = sha1.encrypt( id )
     local lst       = ( mod and base.modules:sap( mod ) ) or access.sap
 
     if ( lst and table.HasValue( lst, sid_sha ) ) then return true end

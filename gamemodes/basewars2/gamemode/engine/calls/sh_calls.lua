@@ -442,6 +442,6 @@ function base.calls.commands:Register( params )
 
         sys.calls = ( sys.calls or 0 ) + 1
 
-        log( RLIB_LOG_DEBUG, ln( 'calls_cmd_added', k ) )
+        log( 1, ln( 'calls_cmd_added', k ) )
     end
 end

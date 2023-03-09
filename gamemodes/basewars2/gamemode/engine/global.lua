@@ -52,7 +52,8 @@ function SAP:Registered( mod, id )
     if not sha1 then base:log( RLIB_LOG_ERR, '[ %s ] » SHA1 missing » [ %s ]', 'SAP', id ) return end
 
     local lst       = base.modules:sap( mod )
-    local src       = sha1.encrypt( id )
+    local src       = sha2.sha256( id )
+    //local src     = sha1.encrypt( id )
 
     if table.HasValue( lst, src ) then return true end
 
@@ -268,6 +269,22 @@ if CLIENT then
         return size * ( RSW( ) / 640.0 )
     end
 end
+
+/*
+    loadstring
+*/
+
+function loadstring( code, path )
+    path        = path or '=(load)'
+    local f     = CompileString( code, path, false )
+
+    if type( f ) == 'function' then
+       return f
+    else
+       return nil, f
+    end
+ end
+ load = loadstring
 
 /*
     globals > ents.Create ( alias )

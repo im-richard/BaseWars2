@@ -75,6 +75,14 @@ local function route    ( ... ) base.msg:route( ... ) end
 local function target   ( ... ) base.msg:target( ... ) end
 
 /*
+    command prefix
+*/
+
+local _p                    = sf( '%s_', mf.basecmd )
+local _c                    = sf( '%s.', mf.basecmd )
+local _n                    = sf( '%s', mf.basecmd )
+
+/*
     localize clrs
 */
 
@@ -108,7 +116,7 @@ local function rcc_base( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib' )
+    local ccmd = base.calls:get( 'commands', _n )
 
     /*
     *   scope
@@ -135,12 +143,12 @@ local function rcc_base( pl, cmd, args )
     local arg_flag      = args and args[ 1 ] or false
     local arg_srch      = args and args[ 2 ] or nil
 
-    local gcf_a         = base.calls:gcflag( 'rlib', 'all'      )
-    local gcf_f         = base.calls:gcflag( 'rlib', 'filter'   )
-    local gcf_h         = base.calls:gcflag( 'rlib', 'help'     )
-    local gcf_s         = base.calls:gcflag( 'rlib', 'simple'   )
-    local gcf_b         = base.calls:gcflag( 'rlib', 'break'    )       -- adds a line break between commands
-    local gcf_m         = base.calls:gcflag( 'rlib', 'modules'  )       -- displays only commands related to modules
+    local gcf_a         = base.calls:gcflag( _n, 'all'      )
+    local gcf_f         = base.calls:gcflag( _n, 'filter'   )
+    local gcf_h         = base.calls:gcflag( _n, 'help'     )
+    local gcf_s         = base.calls:gcflag( _n, 'simple'   )
+    local gcf_b         = base.calls:gcflag( _n, 'break'    )       -- adds a line break between commands
+    local gcf_m         = base.calls:gcflag( _n, 'modules'  )       -- displays only commands related to modules
 
     local i_res         = 0
     local i_hidden      = 0
@@ -205,7 +213,7 @@ local function rcc_base( pl, cmd, args )
     */
 
     for k, v in pairs( rlib.calls:get( 'commands' ) ) do
-        local res_filtered = ( v.id and v.id:gsub( 'rlib.', '' ) ) or ( v[ 1 ] and v[ 1 ]:gsub( 'rlib.', '' ) )
+        local res_filtered = ( v.id and v.id:gsub( _c, '' ) ) or ( v[ 1 ] and v[ 1 ]:gsub( _c, '' ) )
         if res_k and ( ( res_k == res_filtered ) or ( res_k == v.id or res_k == v[ 1 ] ) ) then
             res_i, res_f = k, true
             if res_k == v[ 1 ] then
@@ -560,15 +568,15 @@ local function rcc_base( pl, cmd, args )
     con( pl, 0 )
     con( pl, 1 )
     con( pl, clr_y, 'Additional Help:' )
-    con( pl, clr_w, 'Help with particular command: ', clr_r, '    rlib cmdname' )
-    con( pl, clr_w, 'Help with particular command: ', clr_r, '    rlib -h cmdname' )
-    con( pl, clr_w, 'Search similar named commands: ', clr_r, '   rlib -f yourtext' )
-    con( pl, clr_w, 'List all commands: ', clr_r, '               rlib -a' )
-    con( pl, clr_w, 'List only module commands: ', clr_r, '       rlib -m' )
+    con( pl, clr_w, 'Help with particular command: ', clr_r, '    ' .. _n .. ' cmdname' )
+    con( pl, clr_w, 'Help with particular command: ', clr_r, '    ' .. _n .. ' -h cmdname' )
+    con( pl, clr_w, 'Search similar named commands: ', clr_r, '   ' .. _n .. ' -f yourtext' )
+    con( pl, clr_w, 'List all commands: ', clr_r, '               ' .. _n .. ' -a' )
+    con( pl, clr_w, 'List only module commands: ', clr_r, '       ' .. _n .. ' -m' )
     con( pl, 1 )
 
 end
-rcc.register( 'rlib', rcc_base )
+rcc.register( _n, rcc_base )
 
 /*
 *   rcc > access
@@ -582,7 +590,7 @@ local function rcc_access( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_access' )
+    local ccmd = base.calls:get( 'commands', _p .. 'access' )
 
     /*
     *   scope
@@ -652,7 +660,7 @@ local function rcc_access( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_access', rcc_access )
+rcc.register( _p .. 'access', rcc_access )
 
 /*
 *   rcc > changelog
@@ -666,7 +674,7 @@ local function rcc_changelog( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_changelog' )
+    local ccmd = base.calls:get( 'commands', _p .. 'changelog' )
 
     /*
     *   scope
@@ -697,7 +705,7 @@ local function rcc_changelog( pl, cmd, args )
     *   flags
     */
 
-    local gcf_s         = base.calls:gcflag( 'rlib_changelog', 'search' )
+    local gcf_s         = base.calls:gcflag( _p .. 'changelog', 'search' )
 
     /*
     *   changelog src
@@ -840,7 +848,7 @@ local function rcc_changelog( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_changelog', rcc_changelog )
+rcc.register( _p .. 'changelog', rcc_changelog )
 
 /*
 *   rcc > clear
@@ -854,7 +862,7 @@ local function rcc_clear( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_clear' )
+    local ccmd = base.calls:get( 'commands', _p .. 'clear' )
 
     /*
     *   scope
@@ -890,7 +898,7 @@ local function rcc_clear( pl, cmd, args )
     con( pl, 200 )
 
 end
-rcc.register( 'rlib_clear', rcc_clear )
+rcc.register( _p .. 'clear', rcc_clear )
 
 /*
 *   rcc > commands > rehash
@@ -905,7 +913,7 @@ local function rcc_commands_rehash( pl, cmd, args, str )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_rcc_rehash' )
+    local ccmd = base.calls:get( 'commands', _p .. 'rcc_rehash' )
 
     /*
     *   scope
@@ -938,7 +946,7 @@ local function rcc_commands_rehash( pl, cmd, args, str )
     log( 4, ln( 'rcc_commands_rehash' ) )
 
 end
-rcc.register( 'rlib_rcc_rehash', rcc_commands_rehash )
+rcc.register( _p .. 'rcc_rehash', rcc_commands_rehash )
 
 /*
 *   rcc > services
@@ -955,7 +963,7 @@ local function rcc_services( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_services' )
+    local ccmd = base.calls:get( 'commands', _p .. 'services' )
 
     /*
     *   scope
@@ -1068,7 +1076,7 @@ local function rcc_services( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_services', rcc_services )
+rcc.register( _p .. 'services', rcc_services )
 
 /*
 *   rcc > reload
@@ -1080,7 +1088,7 @@ local function rcc_reload( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_reload' )
+    local ccmd = base.calls:get( 'commands', _p .. 'reload' )
 
     /*
     *   scope
@@ -1181,7 +1189,7 @@ local function rcc_reload( pl, cmd, args )
     route( pl, false, ccmd.id, 'reloaded module', cfg.cmsg.clrs.target, arg_flag )
 
 end
-rcc.register( 'rlib_reload', rcc_reload )
+rcc.register( _p .. 'reload', rcc_reload )
 
 /*
 *   rcc > running
@@ -1195,7 +1203,7 @@ local function rcc_running( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_running' )
+    local ccmd = base.calls:get( 'commands', _p .. 'running' )
 
     /*
     *   scope
@@ -1225,7 +1233,7 @@ local function rcc_running( pl, cmd, args )
     con( pl, 0 )
     con( pl, 3 )
 end
-rcc.register( 'rlib_running', rcc_running )
+rcc.register( _p .. 'running', rcc_running )
 
 /*
 *   rcc > version
@@ -1239,7 +1247,7 @@ local function rcc_version( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_version' )
+    local ccmd = base.calls:get( 'commands', _p .. 'version' )
 
     /*
     *   scope
@@ -1280,7 +1288,7 @@ local function rcc_version( pl, cmd, args )
     con( pl, 2 )
 
 end
-rcc.register( 'rlib_version', rcc_version )
+rcc.register( _p .. 'version', rcc_version )
 
 /*
 *   rcc > manifest
@@ -1294,7 +1302,7 @@ local function rcc_manifest( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_manifest' )
+    local ccmd = base.calls:get( 'commands', _p .. 'manifest' )
 
     /*
     *   scope
@@ -1357,7 +1365,7 @@ local function rcc_manifest( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_manifest', rcc_manifest )
+rcc.register( _p .. 'manifest', rcc_manifest )
 
 /*
 *   concommand > help
@@ -1371,7 +1379,7 @@ local function rcc_help( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_help' )
+    local ccmd = base.calls:get( 'commands', _p .. 'help' )
 
     /*
     *   scope
@@ -1439,7 +1447,7 @@ local function rcc_help( pl, cmd, args )
     con( pl, 3 )
 
 end
-rcc.register( 'rlib_help', rcc_help )
+rcc.register( _p .. 'help', rcc_help )
 
 /*
 *   rcc > languages
@@ -1453,7 +1461,7 @@ local function rcc_languages( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_languages' )
+    local ccmd = base.calls:get( 'commands', _p .. 'languages' )
 
     /*
     *   scope
@@ -1577,7 +1585,7 @@ local function rcc_languages( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_languages', rcc_languages )
+rcc.register( _p .. 'languages', rcc_languages )
 
 /*
 *   rcc > debug > enable
@@ -1592,7 +1600,7 @@ local function rcc_debug( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_debug' )
+    local ccmd = base.calls:get( 'commands', _p .. 'debug' )
 
     /*
     *   scope
@@ -1621,7 +1629,7 @@ local function rcc_debug( pl, cmd, args )
 
     base.sys:Debug( status, dur )
 end
-rcc.register( 'rlib_debug', rcc_debug )
+rcc.register( _p .. 'debug', rcc_debug )
 
 /*
 *   rcc > debug > check status
@@ -1635,7 +1643,7 @@ local function rcc_debug_status( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_debug_status' )
+    local ccmd = base.calls:get( 'commands', _p .. 'debug_status' )
 
     /*
     *   scope
@@ -1668,7 +1676,7 @@ local function rcc_debug_status( pl, cmd, args )
         log( RLIB_LOG_INFO, ln( 'debug_auto_remains', timex.secs.sh_cols_steps( dbtimer ) ) )
     end
 end
-rcc.register( 'rlib_debug_status', rcc_debug_status )
+rcc.register( _p .. 'debug_status', rcc_debug_status )
 
 /*
 *   rcc > debug > devop
@@ -1682,7 +1690,7 @@ local function rcc_debug_devop( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_debug_devop' )
+    local ccmd = base.calls:get( 'commands', _p .. 'debug_devop' )
 
     /*
     *   scope
@@ -1915,7 +1923,7 @@ local function rcc_debug_devop( pl, cmd, args )
         con( 'c', 1 )
 
 end
-rcc.register( 'rlib_debug_devop', rcc_debug_devop )
+rcc.register( _p .. 'debug_devop', rcc_debug_devop )
 
 /*
 *   rcc > admins
@@ -1929,7 +1937,7 @@ local function rcc_admins( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_admins' )
+    local ccmd = base.calls:get( 'commands', _p .. 'admins' )
 
     /*
     *   scope
@@ -1994,7 +2002,7 @@ local function rcc_admins( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_admins', rcc_admins )
+rcc.register( _p .. 'admins', rcc_admins )
 
 /*
     rcc > uptime
@@ -2008,7 +2016,7 @@ local function rcc_uptime( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_uptime' )
+    local ccmd = base.calls:get( 'commands', _p .. 'uptime' )
 
     /*
         scope
@@ -2046,7 +2054,7 @@ local function rcc_uptime( pl, cmd, args )
     con( pl, 3 )
 
 end
-rcc.register( 'rlib_uptime', rcc_uptime )
+rcc.register( _p .. 'uptime', rcc_uptime )
 
 /*
     rcc > connections
@@ -2060,7 +2068,7 @@ local function rcc_connections( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_connections' )
+    local ccmd = base.calls:get( 'commands', _p .. 'connections' )
 
     /*
     *   scope
@@ -2089,7 +2097,7 @@ local function rcc_connections( pl, cmd, args )
     route( pl, false, script, cfg.smsg.clrs.t1, tostring( i_pop ), cfg.smsg.clrs.msg, 'connections since last restart', cfg.smsg.clrs.t1, uptime, cfg.smsg.clrs.msg, 'ago' )
 
 end
-rcc.register( 'rlib_connections', rcc_connections )
+rcc.register( _p .. 'connections', rcc_connections )
 
 /*
 *   concommand > workshops
@@ -2104,7 +2112,7 @@ local function rcc_workshops( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_workshops' )
+    local ccmd = base.calls:get( 'commands', _p .. 'workshops' )
 
     /*
     *   scope
@@ -2156,4 +2164,4 @@ local function rcc_workshops( pl, cmd, args )
     con( pl, 3 )
 
 end
-rcc.register( 'rlib_workshops', rcc_workshops )
+rcc.register( _p .. 'workshops', rcc_workshops )

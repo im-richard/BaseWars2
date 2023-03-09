@@ -93,6 +93,14 @@ local function oort( ... )
 end
 
 /*
+    command prefix
+*/
+
+local _p                    = sf( '%s_', mf.basecmd )
+local _c                    = sf( '%s.', mf.basecmd )
+local _n                    = sf( '%s', mf.basecmd )
+
+/*
     rcc > user
 
     manages a players access with rlib
@@ -110,7 +118,7 @@ local function rcc_user( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_user' )
+    local ccmd = base.calls:get( 'commands', _p .. 'user' )
 
     /*
         scope
@@ -216,7 +224,7 @@ local function rcc_user( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_user', rcc_user )
+rcc.register( _p .. 'user', rcc_user )
 
 /*
     rcc > debug > clean
@@ -230,7 +238,7 @@ local function rcc_debug_clean( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_debug_clean' )
+    local ccmd = base.calls:get( 'commands', _p .. 'debug_clean' )
 
     /*
         scope
@@ -257,7 +265,7 @@ local function rcc_debug_clean( pl, cmd, args, str )
     local arg_flag          = args and args[ 1 ] or false
     arg_flag                = helper.str:ok( arg_flag ) and arg_flag:lower( ) or false
 
-    local gcf_cancel        = base.calls:gcflag( 'rlib_debug_clean', 'cancel' )
+    local gcf_cancel        = base.calls:gcflag( _p .. 'debug_clean', 'cancel' )
     local timer_clean       = cfg.debug.clean_delaytime
 
     if ( arg_flag and ( arg_flag == gcf_cancel ) or ( arg_flag == '-cancel' or arg_flag == 'cancel' ) and timex.exists( 'rlib_debug_doclean' ) ) then
@@ -296,7 +304,7 @@ local function rcc_debug_clean( pl, cmd, args, str )
     end )
 
 end
-rcc.register( 'rlib_debug_clean', rcc_debug_clean )
+rcc.register( _p .. 'debug_clean', rcc_debug_clean )
 
 /*
     rcc > debug > diag
@@ -310,7 +318,7 @@ local function rcc_debug_diag( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_debug_diag' )
+    local ccmd = base.calls:get( 'commands', _p .. 'debug_diag' )
 
     /*
         scope
@@ -334,7 +342,7 @@ local function rcc_debug_diag( pl, cmd, args, str )
         functionality
     */
 
-    con( pl, '\n' )
+    con( pl, 3 )
     con( pl, clr_y, script, clr_p, ' » ', clr_w, 'Debug Diag' )
     con( pl, 0 )
     con( pl, clr_w, 'Information listed below is for the developer to utilize in order to determine what state\n the current build is configured in.' )
@@ -441,8 +449,10 @@ local function rcc_debug_diag( pl, cmd, args, str )
     con( pl, 1 )
     con( pl, 0 )
 
+    con( pl, 3 )
+
 end
-rcc.register( 'rlib_debug_diag', rcc_debug_diag )
+rcc.register( _p .. 'debug_diag', rcc_debug_diag )
 
 /*
     rcc > checksum > new
@@ -456,7 +466,7 @@ local function rcc_checksum_new( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_cs_new' )
+    local ccmd = base.calls:get( 'commands', _p .. 'cs_new' )
 
     /*
         scope
@@ -476,7 +486,60 @@ local function rcc_checksum_new( pl, cmd, args, str )
         return
     end
 
-    local deploy = base.checksum:new( true )
+    con( pl, 3 )
+
+    /*
+        params
+    */
+
+    local arg_flag          = args and args[ 1 ] or false
+    local arg_alg           = args and args[ 2 ] or nil
+
+    /*
+        flags
+    */
+
+    local gcf_a             = base.calls:gcflag( _p .. 'cs_new', 'algorithm' )
+
+    /*
+        -a flag provided, but no algorithm string
+    */
+
+    if ( arg_flag and arg_flag == gcf_a ) and not arg_alg then
+        con( pl, clr_w, 'No value provided for ', clr_y, 'algorithm' )
+        con( pl, 0 )
+        return
+    end
+
+
+    local alg = false
+
+    if arg_alg and arg_flag and ( arg_flag == gcf_a ) then
+        if not base._def.algorithms[ arg_alg ] then
+            con( pl, 2 )
+            con( pl, 0 )
+            con( pl, clr_w, 'No valid algorithm specified' )
+            con( pl, 0 )
+            con( pl, 1 )
+            con( pl, clr_g, 'Select one:' )
+            con( pl, 1 )
+            for k, v in SortedPairs( base._def.algorithms ) do
+                con( pl, clr_y, '              ' .. v )
+            end
+            con( pl, 1 )
+            con( pl, 0 )
+            con( pl, 2 )
+            return
+        end
+    end
+
+    alg = arg_alg
+
+    /*
+        generate new hash file
+    */
+
+    local deploy            = base.checksum:Generate( true, alg )
 
     /*
         confirm msg to pl
@@ -488,8 +551,10 @@ local function rcc_checksum_new( pl, cmd, args, str )
 
     log( RLIB_LOG_SYSTEM, not deploy and ln( 'checksum_write_err' ) or ln( 'checksum_write_success' ) )
 
+    con( pl, 3 )
+
 end
-rcc.register( 'rlib_cs_new', rcc_checksum_new )
+rcc.register( _p .. 'cs_new', rcc_checksum_new )
 
 /*
     rcc > checksum > verify
@@ -504,7 +569,7 @@ local function rcc_checksum_verify( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_cs_verify' )
+    local ccmd = base.calls:get( 'commands', _p .. 'cs_verify' )
 
     /*
         scope
@@ -524,20 +589,28 @@ local function rcc_checksum_verify( pl, cmd, args, str )
         return
     end
 
+    con( pl, 3 )
+
     /*
-        check > see if checksums table valid
+        reads the current .app/checksum.json file.
+        checks if result is not table or an empty table.
     */
 
-    local checksum_file     = base.checksum:get( true )
+    local checksum_file     = base.checksum:GetAppJson( true )
 
     if not istable( checksum_file ) and table.IsEmpty( checksum_file ) then
         con( pl, 1 )
-        con( pl, clr_r, '.app/checksum.json file missing' )
+        con( pl, clr_r, ln( 'checksum_json_missing' ) )
         con( pl, 1 )
         return
     end
 
-    local checksums         = base.checksum:verify( )
+    /*
+        verifies .app/checksums.json file.
+
+    */
+
+    local checksums, i          = base.checksum:verify( )
 
     if not istable( checksums ) then
         con( pl, 1 )
@@ -549,8 +622,6 @@ local function rcc_checksum_verify( pl, cmd, args, str )
     /*
         output > header
     */
-
-    local i = table.Count( checksums )
 
     con( pl, 1 )
     con( pl, clr_y, script, clr_p, ' » ', clr_w, ln( 'con_checksum_verify' ) )
@@ -570,7 +641,10 @@ local function rcc_checksum_verify( pl, cmd, args, str )
         output > subheader
     */
 
+    con( pl, 1 )
     con( pl, clr_w, ln( 'files_listed_have_been_modified' ) )
+    con( pl, 1 )
+    con( pl, clr_w, ln( 'cs_verify_algorithm' , base._def.algorithms[ 'sha256' ]) )
     con( pl, 1 )
     con( pl, 0 )
 
@@ -579,9 +653,9 @@ local function rcc_checksum_verify( pl, cmd, args, str )
     */
 
     local l1_l      = sf( '%-60s',    ln( 'col_file'        ) )
-    local l2_l      = sf( '%-20s',    ln( 'col_verified'    ) )
+    local l2_l      = sf( '%-30s',    ln( 'col_verified'    ) )
     local l3_l      = sf( '%-5s',     ln( 'sym_arrow'       ) )
-    local l4_l      = sf( '%-20s',    ln( 'col_current'     ) )
+    local l4_l      = sf( '%-30s',    ln( 'col_current'     ) )
 
     con( pl, clr_w, l1_l, Color( 0, 255, 0 ), l2_l, clr_w, l3_l, clr_r, l4_l )
     con( pl )
@@ -590,13 +664,13 @@ local function rcc_checksum_verify( pl, cmd, args, str )
     for k, v in pairs( checksums ) do
         if not v.verified or not v.current then continue end
 
-        local verified  = v.verified:sub( 1, 15 )
-        local current   = v.current:sub( 1, 15 )
+        local verified  = v.verified:sub( 1, 25 )
+        local current   = v.current:sub( 1, 25 )
 
         local l1_d      = sf( '%-60s',  k           )
-        local l2_d      = sf( '%-20s',  current     )
+        local l2_d      = sf( '%-30s',  current     )
         local l3_d      = sf( '%-5s',   '»'         )
-        local l4_d      = sf( '%-20s',  verified    )
+        local l4_d      = sf( '%-30s',  verified    )
 
         con( pl, clr_y, l1_d, Color( 0, 255, 0 ), l2_d, clr_w, l3_d, clr_r, l4_d )
 
@@ -606,13 +680,16 @@ local function rcc_checksum_verify( pl, cmd, args, str )
     if i > 0 then
         con( pl, 0 )
         con( pl, 1 )
-        con( pl, clr_w, ln( 'files_modified_count', i ) )
+        con( pl, clr_r, i, ' ', clr_r, ln( 'files_modified_count' ) )
+        con( pl, 1 )
+        con( pl, clr_w, ln( 'files_modified_instructions_1' ), ' ', clr_g, mf.name, clr_w, ' at ', clr_g, mf.site )
+        con( pl, clr_w, ln( 'files_modified_instructions_2', mf.name ) )
     end
 
-    con( pl, 1 )
+    con( pl, 3 )
 
 end
-rcc.register( 'rlib_cs_verify', rcc_checksum_verify )
+rcc.register( _p .. 'cs_verify', rcc_checksum_verify )
 
 /*
     rcc > checksum > now
@@ -626,7 +703,7 @@ local function rcc_checksum_now( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_cs_now' )
+    local ccmd = base.calls:get( 'commands', _p .. 'cs_now' )
 
     /*
         scope
@@ -647,25 +724,29 @@ local function rcc_checksum_now( pl, cmd, args, str )
     end
 
     /*
-        check > see if checksums table valid
+        reads the current .app/checksum.json file.
+        checks if result is not table or an empty table.
     */
 
-    local checksum_file     = base.checksum:get( true )
+    local checksum_file             = base.checksum:GetAppJson( true )
 
     if not istable( checksum_file ) and table.IsEmpty( checksum_file ) then
         con( pl, 1 )
-        con( pl, clr_r, '.app/checksum.json file missing' )
+        con( pl, clr_r, ln( 'checksum_json_missing' ) )
         con( pl, 1 )
         return
     end
 
-    local checksums         = base.checksum:new( )
+    /*
+        generates a temp list of the actual checksums for all library files.
+        compares this list to one used in .app/checksum.json
+    */
+
+    local checksums, i              = base.checksum:Generate( )
 
     /*
         output > header
     */
-
-    local i = table.Count( checksums )
 
     con( pl, 1 )
     con( pl, clr_y, script, clr_p, ' » ', clr_w, ln( 'con_checksum_now' ) )
@@ -720,7 +801,7 @@ local function rcc_checksum_now( pl, cmd, args, str )
     con( pl, 1 )
 
 end
-rcc.register( 'rlib_cs_now', rcc_checksum_now )
+rcc.register( _p .. 'cs_now', rcc_checksum_now )
 
 /*
     rcc > checksum > obf
@@ -734,7 +815,7 @@ local function rcc_checksum_obf( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_cs_obf' )
+    local ccmd = base.calls:get( 'commands', _p .. 'cs_obf' )
 
     /*
         scope
@@ -800,7 +881,7 @@ local function rcc_checksum_obf( pl, cmd, args, str )
     con( pl, 1 )
 
 end
-rcc.register( 'rlib_cs_obf', rcc_checksum_obf )
+rcc.register( _p .. 'cs_obf', rcc_checksum_obf )
 
 /*
     rcc > sap > encode
@@ -812,7 +893,7 @@ local function rcc_sap_encode( pl, cmd, args, str )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_sap_encode' )
+    local ccmd = base.calls:get( 'commands', _p .. 'sap_encode' )
 
     /*
         scope
@@ -884,7 +965,7 @@ local function rcc_sap_encode( pl, cmd, args, str )
     con( pl, 0 )
     con( pl, 3 )
 end
-rcc.register( 'rlib_sap_encode', rcc_sap_encode )
+rcc.register( _p .. 'sap_encode', rcc_sap_encode )
 
 /*
     rcc > udm
@@ -899,7 +980,7 @@ local function rcc_udm( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_udm' )
+    local ccmd = base.calls:get( 'commands', _p .. 'udm' )
 
     /*
         scope
@@ -981,7 +1062,7 @@ local function rcc_udm( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_udm', rcc_udm )
+rcc.register( _p .. 'udm', rcc_udm )
 
 /*
     rcc > calls
@@ -1000,7 +1081,7 @@ local function rcc_calls( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_calls' )
+    local ccmd = base.calls:get( 'commands', _p .. 'calls' )
 
     /*
         scope
@@ -1139,7 +1220,7 @@ local function rcc_calls( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_calls', rcc_calls )
+rcc.register( _p .. 'calls', rcc_calls )
 
 /*
     rcc > modules > error logs
@@ -1153,7 +1234,7 @@ local function rcc_modules_errlog( pl, cmd, args )
         define command
     */
 
-    local ccmd = rlib.calls:get( 'commands', 'rlib_modules_errlog' )
+    local ccmd = rlib.calls:get( 'commands', _p .. 'modules_errlog' )
 
     /*
         scope
@@ -1212,7 +1293,7 @@ local function rcc_modules_errlog( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_modules_errlog', rcc_modules_errlog )
+rcc.register( _p .. 'modules_errlog', rcc_modules_errlog )
 
 /*
     rcc > modules > reroute
@@ -1226,7 +1307,7 @@ local function rcc_modules( pl, cmd, args )
         define command
     */
 
-    local ccmd = rlib.calls:get( 'commands', 'rlib_modules' )
+    local ccmd = rlib.calls:get( 'commands', _p .. 'modules' )
 
     /*
         scope
@@ -1251,7 +1332,7 @@ local function rcc_modules( pl, cmd, args )
     */
 
     local arg_flag  = args and args[ 1 ] or false
-    local gcf_path  = rlib.calls:gcflag( 'rlib_modules', 'paths' )
+    local gcf_path  = rlib.calls:gcflag( _p .. 'modules', 'paths' )
 
     /*
         functionality
@@ -1281,7 +1362,7 @@ local function rcc_modules( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_modules', rcc_modules )
+rcc.register( _p .. 'modules', rcc_modules )
 
 /*
     rcc > modules > reload
@@ -1295,7 +1376,7 @@ local function rcc_modules_reload( pl, cmd, args )
         define command
     */
 
-    local ccmd = rlib.calls:get( 'commands', 'rlib_modules_reload' )
+    local ccmd = rlib.calls:get( 'commands', _p .. 'modules_reload' )
 
     /*
         scope
@@ -1322,7 +1403,7 @@ local function rcc_modules_reload( pl, cmd, args )
     rcore:modules_initialize( )
 
 end
-rcc.register( 'rlib_modules_reload', rcc_modules_reload )
+rcc.register( _p .. 'modules_reload', rcc_modules_reload )
 
 /*
     rcc > tools > asay
@@ -1337,7 +1418,7 @@ local function rcc_tools_asay( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_asay' )
+    local ccmd = base.calls:get( 'commands', _p .. 'asay' )
 
     /*
         check > permissions
@@ -1379,7 +1460,7 @@ local function rcc_tools_asay( pl, cmd, args )
     hook.Run( 'asay.broadcast', pl, asay_message )
 
 end
-rcc.register( 'rlib_asay', rcc_tools_asay )
+rcc.register( _p .. 'asay', rcc_tools_asay )
 
 /*
     rcc > tools > pco
@@ -1394,7 +1475,7 @@ local function rcc_tools_pco( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_tools_pco' )
+    local ccmd = base.calls:get( 'commands', _p .. 'tools_pco' )
 
     /*
         check > permissions
@@ -1431,7 +1512,7 @@ local function rcc_tools_pco( pl, cmd, args )
     tools.pco:Run( pl, arg_state )
 
 end
-rcc.register( 'rlib_tools_pco', rcc_tools_pco )
+rcc.register( _p .. 'tools_pco', rcc_tools_pco )
 
 /*
     rcc > tools > rdo
@@ -1448,7 +1529,7 @@ local function rcc_tools_rdo( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_tools_rdo' )
+    local ccmd = base.calls:get( 'commands', _p .. 'tools_rdo' )
 
     /*
         scope
@@ -1485,7 +1566,7 @@ local function rcc_tools_rdo( pl, cmd, args )
     route( pl, false, script, 'rdo »', cfg.cmsg.clrs.target, set_state )
 
 end
-rcc.register( 'rlib_tools_rdo', rcc_tools_rdo )
+rcc.register( _p .. 'tools_rdo', rcc_tools_rdo )
 
 /*
     rcc > session
@@ -1499,7 +1580,7 @@ local function rcc_session( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_session' )
+    local ccmd = base.calls:get( 'commands', _p .. 'session' )
 
     /*
         scope
@@ -1535,7 +1616,7 @@ local function rcc_session( pl, cmd, args )
     route( pl, false, script, ln( 'lib_session_id', sys.startups ) )
 
 end
-rcc.register( 'rlib_session', rcc_session )
+rcc.register( _p .. 'session', rcc_session )
 
 /*
     rcc > setup
@@ -1549,7 +1630,7 @@ local function rcc_setup( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_setup' )
+    local ccmd = base.calls:get( 'commands', _p .. 'setup' )
 
     /*
         scope
@@ -1669,7 +1750,7 @@ local function rcc_setup( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_setup', rcc_setup )
+rcc.register( _p .. 'setup', rcc_setup )
 
 /*
     rcc > status
@@ -1684,7 +1765,7 @@ local function rcc_status( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_status' )
+    local ccmd = base.calls:get( 'commands', _p .. 'status' )
 
     /*
         scope
@@ -1924,7 +2005,7 @@ local function rcc_status( pl, cmd, args )
     con( pl, clr_r, p1_l, p2_l, p3_l )
     con( pl, 0 )
 
-    for i, m in SortedPairs( base.package.index ) do
+    for i, m in pairs( base.packages ) do
         local id        = tostring( i )
         local ver       = sf( '%s : %s', base.get:ver2str( m.version ), m.build )
         local desc      = tostring( helper.str:truncate( m.desc, 50, '...' ) or ln( 'none' ) )
@@ -2011,7 +2092,7 @@ local function rcc_status( pl, cmd, args )
     end
 
 end
-rcc.register( 'rlib_status', rcc_status )
+rcc.register( _p .. 'status', rcc_status )
 
 /*
     rcc > list packages
@@ -2025,7 +2106,7 @@ local function rcc_packages( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_packages' )
+    local ccmd = base.calls:get( 'commands', _p .. 'packages' )
 
     /*
         scope
@@ -2071,7 +2152,7 @@ local function rcc_packages( pl, cmd, args )
 
     con( pl, 0 )
 
-    for v in helper.get.data( base.package.index ) do
+    for v in helper.get.data( base.packages ) do
         local l1_d        = sf( '%-15s', tostring( helper.str:truncate( v.name, 20, '...' ) or ln( 'err' ) ) )
         local l2_d        = sf( '%-15s', base.get:ver2str( v.version ) or ln( 'err' ) )
         local l3_d        = sf( '%-15s', tostring( v.author ) or ln( 'err' ) )
@@ -2083,7 +2164,7 @@ local function rcc_packages( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_packages', rcc_packages )
+rcc.register( _p .. 'packages', rcc_packages )
 
 /*
     rcc > license
@@ -2097,7 +2178,7 @@ local function rcc_license( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_license' )
+    local ccmd = base.calls:get( 'commands', _p .. 'license' )
 
     /*
         scope
@@ -2171,7 +2252,7 @@ local function rcc_license( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_license', rcc_license )
+rcc.register( _p .. 'license', rcc_license )
 
 /*
     rcc > map > ents
@@ -2185,7 +2266,7 @@ local function rcc_map_ents( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_map_ents' )
+    local ccmd = base.calls:get( 'commands', _p .. 'map_ents' )
 
     /*
         scope
@@ -2235,7 +2316,7 @@ local function rcc_map_ents( pl, cmd, args )
     con( pl, 0 )
 
 end
-rcc.register( 'rlib_map_ents', rcc_map_ents )
+rcc.register( _p .. 'map_ents', rcc_map_ents )
 
 /*
     rcc > check oort
@@ -2249,7 +2330,7 @@ local function rcc_oort( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_oort' )
+    local ccmd = base.calls:get( 'commands', _p .. 'oort' )
 
     /*
         scope
@@ -2276,7 +2357,7 @@ local function rcc_oort( pl, cmd, args )
     local arg_flag          = args and args[ 1 ] or false
     local arg_act           = args and args[ 2 ] or false
     local arg_arg           = args and args[ 3 ] or false
-    local gcf_set           = base.calls:gcflag( 'rlib_oort', 'set' )
+    local gcf_set           = base.calls:gcflag( _p .. 'oort', 'set' )
 
     /*
         flag > set
@@ -2313,7 +2394,7 @@ local function rcc_oort( pl, cmd, args )
     local has_oort = cfg.oort.enabled and ln( 'opt_enabled' ) or ln( 'opt_disabled' )
     route( pl, false, script, 'Oort Engine', cfg.cmsg.clrs.target, '[' .. has_oort .. ']' )
 end
-rcc.register( 'rlib_oort', rcc_oort )
+rcc.register( _p .. 'oort', rcc_oort )
 
 /*
     rcc > oort > update
@@ -2327,7 +2408,7 @@ local function rcc_oort_update( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_oort_update' )
+    local ccmd = base.calls:get( 'commands', _p .. 'oort_update' )
 
     /*
         scope
@@ -2353,7 +2434,7 @@ local function rcc_oort_update( pl, cmd, args )
 
     rlib.oort:Authorize( true )
 end
-rcc.register( 'rlib_oort_update', rcc_oort_update )
+rcc.register( _p .. 'oort_update', rcc_oort_update )
 
 /*
     rcc > oort > next update
@@ -2367,7 +2448,7 @@ local function rcc_oort_next( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_oort_next' )
+    local ccmd = base.calls:get( 'commands', _p .. 'oort_next' )
 
     /*
         scope
@@ -2405,7 +2486,7 @@ local function rcc_oort_next( pl, cmd, args )
     con( pl, 1  )
 
 end
-rcc.register( 'rlib_oort_next', rcc_oort_next )
+rcc.register( _p .. 'oort_next', rcc_oort_next )
 
 /*
     rcc > oort > sendlog
@@ -2419,7 +2500,7 @@ local function rcc_oort_sendlog( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_oort_sendlog' )
+    local ccmd = base.calls:get( 'commands', _p .. 'oort_sendlog' )
 
     /*
         scope
@@ -2446,7 +2527,7 @@ local function rcc_oort_sendlog( pl, cmd, args )
     base.oort:PrepareLog( false )
 
 end
-rcc.register( 'rlib_oort_sendlog', rcc_oort_sendlog )
+rcc.register( _p .. 'oort_sendlog', rcc_oort_sendlog )
 
 /*
     restart > action > cancel
@@ -2519,7 +2600,7 @@ local function rcc_restart( pl, cmd, args )
         get command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_restart' )
+    local ccmd = base.calls:get( 'commands', _p .. 'restart' )
 
     /*
         scope
@@ -2712,7 +2793,7 @@ local function rcc_restart( pl, cmd, args )
     end )
 
 end
-rcc.register( 'rlib_restart', rcc_restart )
+rcc.register( _p .. 'restart', rcc_restart )
 
 /*
     rcc > rpm
@@ -2726,7 +2807,7 @@ local function rcc_rpm( pl, cmd, args )
         define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_rpm' )
+    local ccmd = base.calls:get( 'commands', _p .. 'rpm' )
 
     /*
         scope
@@ -2753,8 +2834,8 @@ local function rcc_rpm( pl, cmd, args )
     local arg_flag          = args and args[ 1 ] or false
     arg_flag                = helper.str:ok( arg_flag ) and arg_flag:lower( ) or false
 
-    local gcf_list          = base.calls:gcflag( 'rlib_rpm', 'list' )
-    local gcf_inst          = base.calls:gcflag( 'rlib_rpm', 'install' )
+    local gcf_list          = base.calls:gcflag( _p .. 'rpm', 'list' )
+    local gcf_inst          = base.calls:gcflag( _p .. 'rpm', 'install' )
     local resp              = sf( '%s > package manager', script )
 
     con( pl, 1  )
@@ -2821,4 +2902,4 @@ local function rcc_rpm( pl, cmd, args )
     con( pl, 3  )
 
 end
-rcc.register( 'rlib_rpm', rcc_rpm )
+rcc.register( _p .. 'rpm', rcc_rpm )

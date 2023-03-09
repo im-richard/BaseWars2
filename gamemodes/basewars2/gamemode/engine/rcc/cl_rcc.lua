@@ -48,6 +48,14 @@ local script                = mf.name
 local sf                    = string.format
 
 /*
+    command prefix
+*/
+
+local _p                    = sf( '%s_', mf.basecmd )
+local _c                    = sf( '%s.', mf.basecmd )
+local _n                    = sf( '%s', mf.basecmd )
+
+/*
     languages
 */
 
@@ -75,7 +83,7 @@ local function rcc_materials_list( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_mats' )
+    local ccmd = base.calls:get( 'commands', _p .. 'mats' )
 
     /*
     *   scope
@@ -185,7 +193,7 @@ local function rcc_materials_list( pl, cmd, args )
         bCatListed = false
     end
 end
-rcc.register( 'rlib_mats', rcc_materials_list )
+rcc.register( _p .. 'mats', rcc_materials_list )
 
 /*
 *   rcc :: panels :: registered
@@ -202,7 +210,7 @@ local function rcc_panels_registered( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_panels' )
+    local ccmd = base.calls:get( 'commands', _p .. 'panels' )
 
     /*
     *   scope
@@ -306,7 +314,7 @@ local function rcc_panels_registered( pl, cmd, args )
     con( pl, 1 )
 
 end
-rcc.register( 'rlib_panels', rcc_panels_registered )
+rcc.register( _p .. 'panels', rcc_panels_registered )
 
 /*
 *   rcc :: terms
@@ -320,7 +328,7 @@ local function rcc_terms( pl, cmd, args )
     *   define command
     */
 
-    local ccmd = base.calls:get( 'commands', 'rlib_terms' )
+    local ccmd = base.calls:get( 'commands', _p .. 'terms' )
 
     /*
     *   scope
@@ -342,4 +350,4 @@ local function rcc_terms( pl, cmd, args )
 
 
 end
-rcc.register( 'rlib_terms', rcc_terms )
+rcc.register( _p .. 'terms', rcc_terms )

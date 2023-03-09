@@ -443,6 +443,51 @@ local pf                    = mf.prefix
     }
 
 /*
+    define > hash algorithms
+*/
+
+    base._def.algorithms =
+    {
+        [ 'md5' ]                   = 'md5',
+        [ 'sha1' ]                  = 'sha1',
+        [ 'sha224' ]                = 'sha224',
+        [ 'sha256' ]                = 'sha256',
+        [ 'sha384' ]                = 'sha384',
+        [ 'sha512' ]                = 'sha512',
+        [ 'sha512_224' ]            = 'sha512_224',
+        [ 'sha512_256' ]            = 'sha512_256',
+
+        [ 'sha3_224' ]              = 'sha3_224',
+        [ 'sha3_256' ]              = 'sha3_256',
+        [ 'sha3_384' ]              = 'sha3_384',
+        [ 'sha3_512' ]              = 'sha3_512',
+
+        [ 'shake128' ]              = 'shake128',
+        [ 'shake256' ]              = 'shake256',
+
+        [ 'hmac' ]                  = 'hmac',
+
+        [ 'blake2b' ]               = 'blake2b',
+        [ 'blake2s' ]               = 'blake2s',
+        [ 'blake2bp' ]              = 'blake2bp',
+        [ 'blake2sp' ]              = 'blake2sp',
+        [ 'blake2xb' ]              = 'blake2xb',
+        [ 'blake2xs' ]              = 'blake2xs',
+
+        [ 'blake2b_160' ]           = 'blake2b_160',
+        [ 'blake2b_256' ]           = 'blake2b_256',
+        [ 'blake2b_384' ]           = 'blake2b_384',
+        [ 'blake2b_512' ]           = 'blake2b_512',
+        [ 'blake2s_128' ]           = 'blake2s_128',
+        [ 'blake2s_160' ]           = 'blake2s_160',
+        [ 'blake2s_224' ]           = 'blake2s_224',
+        [ 'blake2s_256' ]           = 'blake2s_256',
+
+        [ 'blake3' ]                = 'blake3',
+        [ 'blake3_derive_key' ]     = 'blake3_derive_key',
+    }
+
+/*
  	define > materials
 */
 

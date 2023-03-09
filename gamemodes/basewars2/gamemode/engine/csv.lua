@@ -811,94 +811,104 @@ function base.checksum:valid( )
 end
 
 /*
-    checksum > new
+    checksum > generate
 
-    writes a new dataset of sha1 hashes for the current lib
+    writes a new dataset of sha2 hashes for the current lib
 
-    @req    : sha1 module
+    @req    : sha2 module
 
     @param  : bool bNoWrite
             : false   :   only returns data from checksum list generated
             : true    :   returns data from checksum generated and also writes it to /data/rlib/checksum.txt
 */
 
-function base.checksum:new( bWrite )
+function base.checksum:Generate( bWrite, alg, ... )
 
     /*
-        inc sha1 module
+        inc sha2 module
     */
 
-    if not file.Find( 'includes/modules/sha1.lua', 'LUA' ) then
-        log( 2, 'aborting checksum -- missing module sha1' )
+    include( 'includes/modules/sha2.lua' )
+
+    if not file.Find( 'includes/modules/sha2.lua', 'LUA' ) then
+        log( 2, 'aborting checksum -- missing module sha2' )
         return
     end
 
-    include( 'includes/modules/sha1.lua' )
+    include( 'includes/modules/sha2.lua' )
 
     /*
         verify module
     */
 
-    if not sha1 then return false end
+    if not sha2 then return false end
 
     /*
         declarations
     */
 
-    local path_ar       = mf.folder
-    local path_libs     = sf( '%s', path_ar )
-    local mdata         = { }
+    local path_ar               = mf.folder
+    local path_libs             = sf( '%s', path_ar )
+    local mdata                 = { }
 
     /*
         autorun/
     */
 
+    alg                         = alg or 'sha256'
+    local sha_func              = base._def.algorithms[ alg ]
+    local sha_run               = sha2[ sha_func ]
+
+    local sha_size_bytes        = isnumber( size ) and size or 64
+
     local i = 0
-    local files, dirs = file.Find( path_ar .. '/*', 'LUA' )
+    local files, dirs           = file.Find( path_ar .. '/*', 'LUA' )
 
     for k, v in SortedPairs( files ) do
-        local dpath = sf( '%s/%s', path_ar, v )
+        local file_to_hash      = sf( '%s/%s', path_ar, v )
+                                if not file.Exists( file_to_hash, 'LUA' ) then continue end
 
-        if not file.Exists( dpath, 'LUA' ) then continue end
+        local fpath             = file.Read( file_to_hash, 'LUA' )
+        local sha               = sha_run( fpath, ... )
+        //local sha             = sha1.encrypt( fpath )
 
-        local fpath     = file.Read( dpath, 'LUA' )
-        local sha       = sha1.encrypt( fpath )
-
-        mdata[ dpath ]  = sha
+        mdata[ file_to_hash ]  = sha
 
     end
 
     for l, m in SortedPairs( dirs ) do
         if not file.Exists( path_libs .. '/' .. m, 'LUA' ) then continue end
 
-        local fil, dirs2 = file.Find( path_libs .. '/' .. m .. '/*', 'LUA' )
+        local fil, dirs2        = file.Find( path_libs .. '/' .. m .. '/*', 'LUA' )
 
         for f, File in SortedPairs( fil ) do
-            dpath = sf( '%s/%s/%s', path_libs, m, File )
-            if not file.Exists( dpath, 'LUA' ) then continue end
+            file_to_hash        = sf( '%s/%s/%s', path_libs, m, File )
+                                if not file.Exists( file_to_hash, 'LUA' ) then continue end
 
-            fpath   = file.Read( dpath, 'LUA' )
-            sha     = sha1.encrypt( fpath )
+            fpath               = file.Read( file_to_hash, 'LUA' )
+            sha                 = sha2.sha256( fpath, ... )
+            //sha               = sha1.encrypt( fpath )
 
-            mdata[ dpath ]  = sha
+            mdata[ file_to_hash ]      = sha
 
             i = i + 1
         end
 
         for d, di in SortedPairs( dirs2 ) do
-            local _path = sf( '%s/%s/%s', path_libs, m, di )
-            if not file.Exists( _path, 'LUA' ) then continue end
+            local _path         = sf( '%s/%s/%s', path_libs, m, di )
+                                if not file.Exists( _path, 'LUA' ) then continue end
 
-            local fil3, dirs3 = file.Find( _path .. '/*', 'LUA' )
+            local fil3, dirs3   = file.Find( _path .. '/*', 'LUA' )
 
             for a, b in SortedPairs( fil3 ) do
-                dpath           = sf( '%s/%s/%s/%s', path_libs, m, di, b )
-                if not file.Exists( dpath, 'LUA' ) then continue end
+                file_to_hash    = sf( '%s/%s/%s/%s', path_libs, m, di, b )
+                                if not file.Exists( file_to_hash, 'LUA' ) then continue end
 
-                fpath   = file.Read( dpath, 'LUA' )
-                sha     = sha1.encrypt( fpath )
+                fpath           = file.Read( file_to_hash, 'LUA' )
+                sha             = sha2.sha256( fpath, ... )
+                //sha           = sha1.encrypt( fpath )
 
-                mdata[ dpath ]  = sha
+                mdata[ file_to_hash ]  = sha
 
                 i = i + 1
             end
@@ -914,11 +924,12 @@ function base.checksum:new( bWrite )
         file.Write( storage.mft:getpath( 'data_checksum' ), util.TableToJSON( mdata ) )
 
         /*
-            get checksum result sha1
+            get checksum result sha2
         */
 
-        local cs_src    = file.Read( storage.mft:getpath( 'data_checksum' ), 'DATA' )
-        local cs_sha1   = sha1.encrypt( cs_src )
+        local cs_src            = file.Read( storage.mft:getpath( 'data_checksum' ), 'DATA' )
+        local cs_sha1           = sha2.sha256( cs_src )
+        //local cs_sha1         = sha1.encrypt( cs_src )
 
         /*
             output to console
@@ -950,9 +961,15 @@ function base.checksum:new( bWrite )
 
         con( 'c',       Color( 255, 255, 0 ), a1_3, Color( 255, 255, 255 ), a2_3, a3_3 )
 
-        local a1_4              = sf( '%-15s',  ln( 'lib_cs_col_sha1' ) )
+        local a1_4              = sf( '%-15s',  ln( 'lib_cs_col_hash' ) )
         local a2_4              = sf( '%-5s',   '»'   )
         local a3_4              = sf( '%-35s',  cs_sha1 )
+
+        con( 'c',       Color( 255, 255, 0 ), a1_4, Color( 255, 255, 255 ), a2_4, a3_4 )
+
+        local a1_4              = sf( '%-15s',  ln( 'lib_cs_col_algorithm' ) )
+        local a2_4              = sf( '%-5s',   '»'   )
+        local a3_4              = sf( '%-35s',  alg )
 
         con( 'c',       Color( 255, 255, 0 ), a1_4, Color( 255, 255, 255 ), a2_4, a3_4 )
 
@@ -973,8 +990,8 @@ end
 
     returns a list of verified checksums
 
-    @call   : base.checksum:get( true )
-            : base.checksum:get( )
+    @call   : base.checksum:GetAppJson( true )
+            : base.checksum:GetAppJson( )
 
     @param  : bool bVerified
             : false   :   returns checksum from /data/rlib/checksum.txt
@@ -982,7 +999,7 @@ end
     @return : tbl
 */
 
-function base.checksum:get( bVerified )
+function base.checksum:GetAppJson( bVerified )
     local app_existing  = storage.get.json( '.app/checksum.json' )
 
     if bVerified then
@@ -999,14 +1016,14 @@ end
     compares the verified checksum with the condition of the files currently on the server and
     reports back any files that do not match the verified value
 
-    @call   : local chk = base.checksum:verify( )
+    @call   : local chk, i = base.checksum:verify( )
 
     @return : tbl, int
 */
 
 function base.checksum:verify( )
-    local verified  = self:get( true )
-    local current   = self:new( false )
+    local verified  = self:GetAppJson( true )
+    local current   = self:Generate( false )
 
     local data, i = { }, 0
     if table.IsEmpty( verified ) then
@@ -1050,27 +1067,29 @@ function base.checksum:encode( var )
     end
 
     /*
-        inc sha1 module
+        inc sha2 module
     */
 
-    if not file.Find( 'includes/modules/sha1.lua', 'LUA' ) then
-        log( 2, 'aborting checksum -- missing module sha1' )
+    if not file.Find( 'includes/modules/sha2.lua', 'LUA' ) then
+        log( 2, 'aborting checksum -- missing module sha2' )
         return
     end
 
-    include( 'includes/modules/sha1.lua' )
+    include( 'includes/modules/sha2.lua' )
 
     /*
         verify module
     */
 
-    if not sha1 then return false end
+    if not sha2 then return false end
 
     /*
         verify module
     */
 
-    return sha1.encrypt( var )
+    return sha2.sha256( var )
+
+    //return sha1.encrypt( var )
 end
 
 /*

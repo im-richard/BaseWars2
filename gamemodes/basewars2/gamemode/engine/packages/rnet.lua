@@ -1673,14 +1673,14 @@ hook.Add( pid( 'rnet.register' ), pid( '__rnet.rnet.register' ), register_rnet_l
 
 
 /*
-    register package
+    register packages
 */
 
-local function register_pkg( )
+function pkg:register( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__rnet.pkg.register' ), register_pkg )
+hook.Add( pid( 'pkg.register' ), pid( '__rnet.pkg.register' ), pkg.register )
 
 /*
     manifest

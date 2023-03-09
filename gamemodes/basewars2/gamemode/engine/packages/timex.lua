@@ -1805,16 +1805,6 @@ end
 hook.Add( pid( 'cmd.register' ), pid( '__timex.cmd.register' ), RegisterRCC )
 
 /*
-    register package
-*/
-
-local function register_pkg( )
-    if not istable( _M ) then return end
-    base.package:Register( _M )
-end
-hook.Add( pid( 'pkg.register' ), pid( '__timex.pkg.register' ), register_pkg )
-
-/*
     module info > manifest
 */
 
@@ -1839,6 +1829,16 @@ function pkg:loader( class )
     self.__index = self
     return setmetatable( class, self )
 end
+
+/*
+    register packages
+*/
+
+function pkg:register( )
+    if not istable( _M ) then return end
+    base.package:Register( _M )
+end
+hook.Add( pid( 'pkg.register' ), pid( '__timex.pkg.register' ), pkg.register )
 
 /*
     __index / manifest declarations
