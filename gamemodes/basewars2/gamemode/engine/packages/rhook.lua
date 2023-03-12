@@ -593,11 +593,11 @@ hook.Add( pid( 'cmd.register' ), pid( '__rhook.cmd.register' ), RegisterRCC )
     register packages
 */
 
-function pkg:register( )
+function Packages( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__rhook.pkg.register' ), pkg.register )
+hook.Add( pid( 'pkg.register' ), pid( '__rhook.pkg.register' ), Packages )
 
 /*
     manifest

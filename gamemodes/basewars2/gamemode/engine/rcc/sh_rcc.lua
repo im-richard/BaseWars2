@@ -93,33 +93,33 @@ local clr_w                 = Color( 255, 255, 255 )
 local clr_p                 = Color( 255, 0, 255 )
 
 /*
-*   rcc > base
-*
-*   base concommand for lib which includes all help information and the ability to search for specific
-*   commands built into the library
-*
-*   command to be used in console
-*
-*   @usage  : rlib                        [displays full lib command list]
-*           : rlib <search_string>        [search for cmd help info]
-*           : rlib -h <search_string>     [search for cmd help info]
-*           : rlib -f <search_string>     [show only commands matching search string]
-*
-*   @ex     : rlib rlib.version
-*           : rlib version
-*           : rlib -h version
+    rcc > base
+
+    base concommand for lib which includes all help information and the ability to search for specific
+    commands built into the library
+
+    command to be used in console
+
+    @usage  : rlib                        [displays full lib command list]
+            : rlib <search_string>        [search for cmd help info]
+            : rlib -h <search_string>     [search for cmd help info]
+            : rlib -f <search_string>     [show only commands matching search string]
+
+    @ex     : rlib rlib.version
+            : rlib version
+            : rlib -h version
 */
 
 local function rcc_base( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _n )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -128,7 +128,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -137,7 +137,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   declarations
+        declarations
     */
 
     local arg_flag      = args and args[ 1 ] or false
@@ -154,15 +154,15 @@ local function rcc_base( pl, cmd, args )
     local i_hidden      = 0
 
     /*
-    *   declare
+        declare
     */
 
     local res_k, res_f, res_i, res_c = nil, false, nil, nil
 
     /*
-    *   check > minimum character amount
-    *
-    *   @def    : ( min ) 4
+        check > minimum character amount
+
+        @def    : ( min ) 4
     */
 
     if arg_flag and not helper.str:startsw( arg_flag, '-' ) and arg_flag:len( ) < 2 then
@@ -174,9 +174,9 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   check > minimum character amount
-    *
-    *   @def    : ( min ) 4
+        check > minimum character amount
+
+        @def    : ( min ) 4
     */
 
     if helper.str:ok( arg_srch ) and arg_srch:len( ) < 2 then
@@ -188,7 +188,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   check for a provided exact match in search arg
+        check for a provided exact match in search arg
     */
 
     if ( arg_flag == gcf_h and arg_srch ) then
@@ -203,13 +203,13 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   search command list for matching search string
-    *
-    *   for rlib based commands; it supports both the full command
-    *   as well as a string without [ rlib. ]
-    *
-    *   Example:        rlib.setup OR setup
-    *                   return the same result
+        search command list for matching search string
+
+        for rlib based commands; it supports both the full command
+        as well as a string without [ rlib. ]
+
+        Example:        rlib.setup OR setup
+                        return the same result
     */
 
     for k, v in pairs( rlib.calls:get( 'commands' ) ) do
@@ -225,7 +225,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   error > -f flag with no search string
+        error > -f flag with no search string
     */
 
     if ( arg_flag == gcf_f and not arg_srch ) then
@@ -236,7 +236,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   error > invalid flag specified
+        error > invalid flag specified
     */
 
     if not res_f and arg_flag and helper.str:startsw( arg_flag, '-' ) and not base.calls:gcflag_valid( ccmd.id, arg_flag ) then
@@ -249,7 +249,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   error > no result but param
+        error > no result but param
     */
 
     if not res_f and ( arg_flag and not base.calls:gcflag_valid( ccmd.id, arg_flag ) ) then
@@ -262,11 +262,11 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   output > specific command result
-    *
-    *   output the result of the searched console command
-    *   run this before anything else so we can keep annoying header prints from appearing for each and
-    *   every command result which should only show at the top level
+        output > specific command result
+
+        output the result of the searched console command
+        run this before anything else so we can keep annoying header prints from appearing for each and
+        every command result which should only show at the top level
     */
 
     if res_f then
@@ -280,7 +280,7 @@ local function rcc_base( pl, cmd, args )
         con( pl, clr_w, desc .. '\n' )
 
         /*
-        *   command arguments
+            command arguments
         */
 
         if item.args and item.args ~= '' then
@@ -294,7 +294,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command is_base
+            command is_base
         */
 
         if item.is_base then
@@ -310,7 +310,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command scope
+            command scope
         */
 
         if isnumber( item.scope ) then
@@ -324,7 +324,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command flags
+            command flags
         */
 
         if item.flags and istable( item.flags ) then
@@ -348,7 +348,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command examples
+            command examples
         */
 
         if item.ex and istable( item.ex ) then
@@ -364,7 +364,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command notes
+            command notes
         */
 
         if item.notes and istable( item.notes ) then
@@ -382,7 +382,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command hiddem
+            command hiddem
         */
 
         if item.is_hidden then
@@ -398,7 +398,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command warn
+            command warn
         */
 
         if item.warn then
@@ -414,7 +414,7 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   command deny server-side execution
+            command deny server-side execution
         */
 
         if item.no_console then
@@ -435,7 +435,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   output > header
+        output > header
     */
 
     local tbl_about = helper.str:wordwrap( mf.about, 90 )
@@ -451,9 +451,9 @@ local function rcc_base( pl, cmd, args )
     con( pl, 0 )
 
     /*
-    *   output > search string
-    *
-    *   displays the string being located if flag and search string provided
+        output > search string
+
+        displays the string being located if flag and search string provided
     */
 
     if ( arg_flag == gcf_f ) and arg_srch then
@@ -461,7 +461,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   output > header columns
+        output > header columns
     */
 
     local c1_l      = sf( '%-35s',      'Command'           )
@@ -472,14 +472,14 @@ local function rcc_base( pl, cmd, args )
     con( pl, clr_r, resp .. '\n' )
 
     /*
-    *   output > results
+        output > results
     */
 
     for k, v in helper:sortedkeys( base.calls:get( 'commands' ) ) do
 
         /*
-        *   :   no flags
-        *       if no gcf flags specified, only show commands marked as 'official'
+            :   no flags
+                if no gcf flags specified, only show commands marked as 'official'
         */
 
         if not arg_flag and not v.official then
@@ -488,9 +488,9 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   :   gcf_a
-        *       if flag -a not specified; all commands not on the correct running scope will be
-        *       hidden.
+            :   gcf_a
+                if flag -a not specified; all commands not on the correct running scope will be
+                hidden.
         */
 
         if ( arg_flag ~= gcf_a ) and ( SERVER and v.scope == 3 or CLIENT and v.scope == 1 ) then
@@ -499,8 +499,8 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   :   gcf_m
-        *       will only display module commands
+            :   gcf_m
+                will only display module commands
         */
 
         if arg_flag == gcf_m and v.official then
@@ -509,8 +509,8 @@ local function rcc_base( pl, cmd, args )
         end
 
         /*
-        *   :   gcf_a
-        *       will only display module commands
+            :   gcf_a
+                will only display module commands
         */
 
         if ( arg_flag ~= gcf_a ) and v.is_hidden then
@@ -560,7 +560,7 @@ local function rcc_base( pl, cmd, args )
     end
 
     /*
-    *   output > footer
+        output > footer
     */
 
     con( pl, 0 )
@@ -579,21 +579,21 @@ end
 rcc.register( _n, rcc_base )
 
 /*
-*   rcc > access
-*
-*   returns a targets current access to the library
+    rcc > access
+
+    returns a targets current access to the library
 */
 
 local function rcc_access( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'access' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -602,7 +602,7 @@ local function rcc_access( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -611,7 +611,7 @@ local function rcc_access( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     if access:bIsConsole( pl ) then
@@ -620,19 +620,19 @@ local function rcc_access( pl, cmd, args )
     end
 
     /*
-    *   validate player
+        validate player
     */
 
     if not helper.ok.ply( pl ) then return end
 
     /*
-    *   get users group
+        get users group
     */
 
     local ugroup = helper.ply.ugroup( pl )
 
     /*
-    *   is developer
+        is developer
     */
 
     if access:bIsDev( pl ) then
@@ -641,7 +641,7 @@ local function rcc_access( pl, cmd, args )
     end
 
     /*
-    *   is owner
+        is owner
     */
 
     if access:bIsOwner( pl ) then
@@ -650,7 +650,7 @@ local function rcc_access( pl, cmd, args )
     end
 
     /*
-    *   response
+        response
     */
 
     if ugroup and ugroup ~= 'user' then
@@ -663,21 +663,21 @@ end
 rcc.register( _p .. 'access', rcc_access )
 
 /*
-*   rcc > changelog
-*
-*   returns contents of the changelog.json file
+    rcc > changelog
+
+    returns contents of the changelog.json file
 */
 
 local function rcc_changelog( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'changelog' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -686,7 +686,7 @@ local function rcc_changelog( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -695,20 +695,20 @@ local function rcc_changelog( pl, cmd, args )
     end
 
     /*
-    *   params
+        params
     */
 
     local arg_flag      = args and args[ 1 ] or false
     local arg_srch      = args and args[ 2 ] or nil
 
     /*
-    *   flags
+        flags
     */
 
     local gcf_s         = base.calls:gcflag( _p .. 'changelog', 'search' )
 
     /*
-    *   changelog src
+        changelog src
     */
 
     local src           = storage.get.json( '.app/changelog.json' )
@@ -728,9 +728,9 @@ local function rcc_changelog( pl, cmd, args )
     con( pl, 0 )
 
     /*
-    *   no search args
-    *
-    *   print list of available versions
+        no search args
+
+        print list of available versions
     */
 
     if not arg_flag and not arg_srch then
@@ -763,7 +763,7 @@ local function rcc_changelog( pl, cmd, args )
     end
 
     /*
-    *   -s flag provided, but no search string
+        -s flag provided, but no search string
     */
 
     if ( arg_flag and arg_flag == gcf_s ) and not arg_srch then
@@ -773,7 +773,7 @@ local function rcc_changelog( pl, cmd, args )
     end
 
     /*
-    *   -s flag provided, value given
+        -s flag provided, value given
     */
 
     if ( arg_flag and arg_flag == gcf_s ) and arg_srch then
@@ -808,7 +808,7 @@ local function rcc_changelog( pl, cmd, args )
     end
 
     /*
-    *   search arg returns no results
+        search arg returns no results
     */
 
     if arg_flag and not tbl[ tostring( arg_flag ) ] then
@@ -826,7 +826,7 @@ local function rcc_changelog( pl, cmd, args )
     end
 
     /*
-    *   search arg matches list of versions listed in changelog
+        search arg matches list of versions listed in changelog
     */
 
     if tbl[ tostring( arg_flag ) ] then
@@ -851,21 +851,21 @@ end
 rcc.register( _p .. 'changelog', rcc_changelog )
 
 /*
-*   rcc > clear
-*
-*   clears the console
+    rcc > clear
+
+    clears the console
 */
 
 local function rcc_clear( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'clear' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -874,7 +874,7 @@ local function rcc_clear( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -883,16 +883,16 @@ local function rcc_clear( pl, cmd, args )
     end
 
     /*
-    *   functionality
-    *
-    *   sort of a 'hack' for clearing.
-    *   server-side consoles dont have a clear function; and client-side concommand 'clear'
-    *   is blocked.
-    *
-    *   can be executed client-side also, but really no use considering client has a true command
-    *   already.
-    *
-    *   pretty much im just tired of raping my enter key server-side so i can track errors
+        functionality
+
+        sort of a 'hack' for clearing.
+        server-side consoles dont have a clear function; and client-side concommand 'clear'
+        is blocked.
+
+        can be executed client-side also, but really no use considering client has a true command
+        already.
+
+        pretty much im just tired of raping my enter key server-side so i can track errors
     */
 
     con( pl, 200 )
@@ -901,22 +901,22 @@ end
 rcc.register( _p .. 'clear', rcc_clear )
 
 /*
-*   rcc > commands > rehash
-*
-*   register commands with rcc
-*   calls rlib.calls.commands:RCC( )
+    rcc > commands > rehash
+
+    register commands with rcc
+    calls rlib.calls.commands:RCC( )
 */
 
 local function rcc_commands_rehash( pl, cmd, args, str )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'rcc_rehash' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -925,7 +925,7 @@ local function rcc_commands_rehash( pl, cmd, args, str )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsDev( pl ) then
@@ -934,13 +934,13 @@ local function rcc_commands_rehash( pl, cmd, args, str )
     end
 
     /*
-    *   register commands
+        register commands
     */
 
     rcc.prepare( )
 
     /*
-    *   output
+        output
     */
 
     log( 4, ln( 'rcc_commands_rehash' ) )
@@ -949,24 +949,24 @@ end
 rcc.register( _p .. 'rcc_rehash', rcc_commands_rehash )
 
 /*
-*   rcc > services
-*
-*   returns a list of all registered calls associated to rlib / rcore
-*
-*   @usage : rlib.services <returns all services>
-*   @usage : rlib.services -s termhere <returns services matching search term>
+    rcc > services
+
+    returns a list of all registered calls associated to rlib / rcore
+
+    @usage : rlib.services <returns all services>
+    @usage : rlib.services -s termhere <returns services matching search term>
 */
 
 local function rcc_services( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'services' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -975,13 +975,13 @@ local function rcc_services( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then return end
 
     /*
-    *   functionality
+        functionality
     */
 
     local arg_flag          = args and args[ 1 ] or false
@@ -1001,7 +1001,7 @@ local function rcc_services( pl, cmd, args )
     con( pl, 0      )
 
     /*
-    *   loop services table
+        loop services table
     */
 
     if arg_flag then
@@ -1079,19 +1079,19 @@ end
 rcc.register( _p .. 'services', rcc_services )
 
 /*
-*   rcc > reload
+    rcc > reload
 */
 
 local function rcc_reload( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'reload' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not rlib.con:Is( pl ) ) then
@@ -1100,7 +1100,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1109,7 +1109,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   declarations
+        declarations
     */
 
     local arg_flag          = args and args[ 1 ] or false
@@ -1121,7 +1121,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   check > rcore missing
+        check > rcore missing
     */
 
     if not rcore then
@@ -1130,7 +1130,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   action > reload rcore
+        action > reload rcore
     */
 
     if arg_flag == 'rcore' then
@@ -1140,7 +1140,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   declare > specific module
+        declare > specific module
     */
 
     local folder        = rcore.manifest.modpath
@@ -1155,7 +1155,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   check > no matching modules found
+        check > no matching modules found
     */
 
     if i < 1 then
@@ -1164,7 +1164,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   locate specified module manifest file
+        locate specified module manifest file
     */
 
     for l, m in pairs( sub_dir ) do
@@ -1183,7 +1183,7 @@ local function rcc_reload( pl, cmd, args )
     end
 
     /*
-    *   load msg
+        load msg
     */
 
     route( pl, false, ccmd.id, 'reloaded module', cfg.cmsg.clrs.target, arg_flag )
@@ -1192,21 +1192,21 @@ end
 rcc.register( _p .. 'reload', rcc_reload )
 
 /*
-*   rcc > running
-*
-*   outputs list of installed modules
+    rcc > running
+
+    outputs list of installed modules
 */
 
 local function rcc_running( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'running' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1215,7 +1215,7 @@ local function rcc_running( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     local lst               = base.modules:listf( )
@@ -1236,21 +1236,21 @@ end
 rcc.register( _p .. 'running', rcc_running )
 
 /*
-*   rcc > version
-*
-*   outputs version of rlib running.
+    rcc > version
+
+    outputs version of rlib running.
 */
 
 local function rcc_version( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'version' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1259,7 +1259,7 @@ local function rcc_version( pl, cmd, args )
     end
 
     /*
-    *   declare
+        declare
     */
 
     local uptime            = timex.secs.sh_cols_steps( SysTime( ) - sys.uptime )
@@ -1267,7 +1267,7 @@ local function rcc_version( pl, cmd, args )
     local lists             = base.modules:listf( )
 
     /*
-    *   output
+        output
     */
 
     con( pl, 2 )
@@ -1291,21 +1291,21 @@ end
 rcc.register( _p .. 'version', rcc_version )
 
 /*
-*   rcc > manifest
-*
-*   displays more detailed info about rlib
+    rcc > manifest
+
+    displays more detailed info about rlib
 */
 
 local function rcc_manifest( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'manifest' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1314,7 +1314,7 @@ local function rcc_manifest( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1323,7 +1323,7 @@ local function rcc_manifest( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     con( pl, 0 )
@@ -1368,21 +1368,21 @@ end
 rcc.register( _p .. 'manifest', rcc_manifest )
 
 /*
-*   concommand > help
-*
-*   returns support info
+    concommand > help
+
+    returns support info
 */
 
 local function rcc_help( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'help' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1391,7 +1391,7 @@ local function rcc_help( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1400,7 +1400,7 @@ local function rcc_help( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     con( pl, 3 )
@@ -1450,21 +1450,21 @@ end
 rcc.register( _p .. 'help', rcc_help )
 
 /*
-*   rcc > languages
-*
-*   returns information related to language entries
+    rcc > languages
+
+    returns information related to language entries
 */
 
 local function rcc_languages( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'languages' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1473,7 +1473,7 @@ local function rcc_languages( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1482,7 +1482,7 @@ local function rcc_languages( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     con( pl, 1 )
@@ -1498,7 +1498,7 @@ local function rcc_languages( pl, cmd, args )
     con( pl, 0 )
 
     /*
-    *   output
+        output
     */
 
     local cnt_entries = 0
@@ -1527,7 +1527,7 @@ local function rcc_languages( pl, cmd, args )
     end
 
     /*
-    *   rcore language entries
+        rcore language entries
     */
 
     local a1_l      = sf( 'rlib » language entries' )
@@ -1588,22 +1588,22 @@ end
 rcc.register( _p .. 'languages', rcc_languages )
 
 /*
-*   rcc > debug > enable
-*
-*   turns debug mode on for a duration of time specified and then automatically turns it off after the
-*   timer has expired.
+    rcc > debug > enable
+
+    turns debug mode on for a duration of time specified and then automatically turns it off after the
+    timer has expired.
 */
 
 local function rcc_debug( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'debug' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1612,7 +1612,7 @@ local function rcc_debug( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1621,7 +1621,7 @@ local function rcc_debug( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     local status        = args and args[ 1 ] or false
@@ -1632,21 +1632,21 @@ end
 rcc.register( _p .. 'debug', rcc_debug )
 
 /*
-*   rcc > debug > check status
-*
-*   checks the status of debug mode
+    rcc > debug > check status
+
+    checks the status of debug mode
 */
 
 local function rcc_debug_status( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'debug_status' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1655,7 +1655,7 @@ local function rcc_debug_status( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1664,7 +1664,7 @@ local function rcc_debug_status( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     local dbtimer           = timex.remains( 'rlib_debug_signal_sv' ) or false
@@ -1679,21 +1679,21 @@ end
 rcc.register( _p .. 'debug_status', rcc_debug_status )
 
 /*
-*   rcc > debug > devop
-*
-*   executes devop hook
+    rcc > debug > devop
+
+    executes devop hook
 */
 
 local function rcc_debug_devop( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'debug_devop' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -1702,7 +1702,7 @@ local function rcc_debug_devop( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -1711,7 +1711,7 @@ local function rcc_debug_devop( pl, cmd, args )
     end
 
     /*
-    *   search pattern
+        search pattern
     */
 
     local pattern = '%l+_%l+'
@@ -1721,7 +1721,7 @@ local function rcc_debug_devop( pl, cmd, args )
     ************************************************************************/
 
         /*
-        *   output > timex > header
+            output > timex > header
         */
 
             con( 'c', 3 )
@@ -1731,13 +1731,13 @@ local function rcc_debug_devop( pl, cmd, args )
             con( 'c', 1 )
 
         /*
-        *   output > timex > define count
+            output > timex > define count
         */
 
             local i_timex = 0
 
         /*
-        *   output > timex > check second parameter used _ instead of .
+            output > timex > check second parameter used _ instead of .
         */
 
             for k, v in helper.get.table( timex.source( ) ) do
@@ -1753,7 +1753,7 @@ local function rcc_debug_devop( pl, cmd, args )
             end
 
         /*
-        *   output > timex > no faults
+            output > timex > no faults
         */
 
             if i_timex < 1 then
@@ -1765,7 +1765,7 @@ local function rcc_debug_devop( pl, cmd, args )
     ************************************************************************/
 
         /*
-        *   output > rnet > header
+            output > rnet > header
         */
 
             con( 'c', 2 )
@@ -1775,13 +1775,13 @@ local function rcc_debug_devop( pl, cmd, args )
             con( 'c', 1 )
 
         /*
-        *   output > rnet > define count
+            output > rnet > define count
         */
 
             local i_rnet            = 0
 
         /*
-        *   output > rnet > check second parameter used _ instead of .
+            output > rnet > check second parameter used _ instead of .
         */
 
             for k, v in helper.get.table( rnet.source( ) ) do
@@ -1797,7 +1797,7 @@ local function rcc_debug_devop( pl, cmd, args )
             end
 
         /*
-        *   output > rnet > entry has rnet.new ( ) entry, but NOT registered in ENV file
+            output > rnet > entry has rnet.new ( ) entry, but NOT registered in ENV file
         */
 
             for k, v in helper.get.table( rnet.g_Session( ) ) do
@@ -1813,7 +1813,7 @@ local function rcc_debug_devop( pl, cmd, args )
             end
 
         /*
-        *   output > rnet > entry defined in ENV, but no rnet.new found
+            output > rnet > entry defined in ENV, but no rnet.new found
         */
 
             for k, v in helper.get.table( rnet.source( ) ) do
@@ -1840,7 +1840,7 @@ local function rcc_debug_devop( pl, cmd, args )
             end
 
         /*
-        *   output > rnet > no faults
+            output > rnet > no faults
         */
 
             if i_rnet < 1 then
@@ -1852,7 +1852,7 @@ local function rcc_debug_devop( pl, cmd, args )
     ************************************************************************/
 
         /*
-        *   output > rhook > header
+            output > rhook > header
         */
 
         con( 'c', 2 )
@@ -1862,7 +1862,7 @@ local function rcc_debug_devop( pl, cmd, args )
         con( 'c', 1 )
 
         /*
-        *   output > rhook > define count
+            output > rhook > define count
         */
 
         local i_rh          = 0
@@ -1916,7 +1916,7 @@ local function rcc_debug_devop( pl, cmd, args )
         end
 
     /*
-    *   output > footer
+        output > footer
     */
 
         con( 'c', 1 )
@@ -1926,21 +1926,21 @@ end
 rcc.register( _p .. 'debug_devop', rcc_debug_devop )
 
 /*
-*   rcc > admins
-*
-*   returns a list of steamids who have access to rlib as a developer
+    rcc > admins
+
+    returns a list of steamids who have access to rlib as a developer
 */
 
 local function rcc_admins( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'admins' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -2065,13 +2065,13 @@ rcc.register( _p .. 'uptime', rcc_uptime )
 local function rcc_connections( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'connections' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -2080,7 +2080,7 @@ local function rcc_connections( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then
@@ -2089,7 +2089,7 @@ local function rcc_connections( pl, cmd, args )
     end
 
     /*
-    *   functionality
+        functionality
     */
 
     local i_pop     = isnumber( sys.connections ) and sys.connections or 0
@@ -2100,22 +2100,22 @@ end
 rcc.register( _p .. 'connections', rcc_connections )
 
 /*
-*   concommand > workshops
-*
-*   returns workshops that are loaded on the server through the various methods including rlib, rcore,
-*   and individual modules.
+    concommand > workshops
+
+    returns workshops that are loaded on the server through the various methods including rlib, rcore,
+    and individual modules.
 */
 
 local function rcc_workshops( pl, cmd, args )
 
     /*
-    *   define command
+        define command
     */
 
     local ccmd = base.calls:get( 'commands', _p .. 'workshops' )
 
     /*
-    *   scope
+        scope
     */
 
     if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
@@ -2124,7 +2124,7 @@ local function rcc_workshops( pl, cmd, args )
     end
 
     /*
-    *   perms
+        perms
     */
 
     if not access:bIsRoot( pl ) then

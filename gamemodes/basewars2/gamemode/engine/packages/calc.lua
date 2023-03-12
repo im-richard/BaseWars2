@@ -814,11 +814,11 @@ hook.Add( pid( 'cmd.register' ), pid( '__calc.cmd.register' ), rcc_register )
     register packages
 */
 
-function pkg:register( )
+function Packages( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__calc.pkg.register' ), pkg.register )
+hook.Add( pid( 'pkg.register' ), pid( '__calc.pkg.register' ), Packages )
 
 /*
 *   module info :: manifest

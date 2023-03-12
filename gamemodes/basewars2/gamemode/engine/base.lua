@@ -484,6 +484,26 @@ function base:console( pl, ... )
 end
 
 /*
+    console > start
+*/
+
+function base.con:S( pl )
+    local targ = helper.ok.ply( pl ) and pl or 'c'
+    base:console( targ, 2 )
+    base:console( targ, 0 )
+end
+
+/*
+    console > end
+*/
+
+function base.con:E( pl )
+    local targ = helper.ok.ply( pl ) and pl or 'c'
+    base:console( targ, 0 )
+    base:console( targ, 2 )
+end
+
+/*
     base > console > guided
 
     displays a message in the players console

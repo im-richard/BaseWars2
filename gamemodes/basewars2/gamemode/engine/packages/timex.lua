@@ -1834,11 +1834,11 @@ end
     register packages
 */
 
-function pkg:register( )
+function Packages( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__timex.pkg.register' ), pkg.register )
+hook.Add( pid( 'pkg.register' ), pid( '__timex.pkg.register' ), Packages )
 
 /*
     __index / manifest declarations

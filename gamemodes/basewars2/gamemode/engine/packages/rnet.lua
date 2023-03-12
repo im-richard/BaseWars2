@@ -1671,16 +1671,15 @@ local function register_rnet_libs( )
 end
 hook.Add( pid( 'rnet.register' ), pid( '__rnet.rnet.register' ), register_rnet_libs )
 
-
 /*
     register packages
 */
 
-function pkg:register( )
+function Packages( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__rnet.pkg.register' ), pkg.register )
+hook.Add( pid( 'pkg.register' ), pid( '__rnet.pkg.register' ), Packages )
 
 /*
     manifest

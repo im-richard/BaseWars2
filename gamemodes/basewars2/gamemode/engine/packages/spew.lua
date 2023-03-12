@@ -393,11 +393,11 @@ hook.Add( pid( 'cmd.register' ), pid( '__spew.cmd.register' ), rcc_register )
     register packages
 */
 
-function pkg:register( )
+function Packages( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__spew.pkg.register' ), pkg.register )
+hook.Add( pid( 'pkg.register' ), pid( '__spew.pkg.register' ), Packages )
 
 /*
 *   module info > manifest

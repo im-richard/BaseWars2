@@ -287,6 +287,21 @@ function loadstring( code, path )
  load = loadstring
 
 /*
+    get arg
+*/
+
+function __GetArg( args, id, alt )
+    if not istable( args ) and not isstring( args ) then return false end
+    if not isnumber( id ) then
+        id = 1
+    end
+
+    alt = isstring( alt ) and alt or false
+
+    return args[ id ] or alt
+ end
+
+/*
     globals > ents.Create ( alias )
 */
 

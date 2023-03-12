@@ -44,6 +44,25 @@ local dcat                  = 9
 local sf                    = string.format
 
 /*
+    localize clrs
+*/
+
+local clr_r                 = Color( 255, 0, 0 )
+local clr_y                 = Color( 255, 255, 0 )
+local clr_g                 = Color( 0, 255, 0 )
+local clr_w                 = Color( 255, 255, 255 )
+local clr_p                 = Color( 255, 0, 255 )
+
+/*
+    localize output functions
+*/
+
+local function con      ( ... ) base:console( ... ) end
+local function log      ( ... ) base:log( ... ) end
+local function route    ( ... ) base.msg:route( ... ) end
+local function target   ( ... ) base.msg:target( ... ) end
+
+/*
     languages
 */
 
@@ -86,20 +105,20 @@ local function pid( str, suffix )
 end
 
 /*
-*   define module
+    define module
 */
 
 module( 'rcc', package.seeall )
 
 /*
-*   local declarations
+    local declarations
 */
 
 local pkg           = rcc
 local pkg_name      = _NAME or 'rcc'
 
 /*
-*   pkg declarations
+    pkg declarations
 */
 
 local manifest =
@@ -112,7 +131,7 @@ local manifest =
 }
 
 /*
-*   required tables
+    required tables
 */
 
 cfg                 = cfg or { }
@@ -124,15 +143,15 @@ call                = call or { }
 storage             = storage or { }
 
 /*
-*   net > debugging
-*
-*   determines if debugging mode is enabled
+    net > debugging
+
+    determines if debugging mode is enabled
 */
 
 cfg.debug           = cfg.debug or false
 
 /*
-*	prefix > getid
+ 	prefix > getid
 */
 
 local function gid( id )
@@ -165,12 +184,12 @@ function g_PackageId( str )
 end
 
 /*
-*   new > rlib
-*
-*   @ex     : rcc.new.rlib( 'module_concommand_name', module_fn_name )
-*
-*   @param  : str name
-*   @param  : varg ( ... )
+    new > rlib
+
+    @ex     : rcc.new.rlib( 'module_concommand_name', module_fn_name )
+
+    @param  : str name
+    @param  : varg ( ... )
 */
 
 function new.rlib( name, ... )
@@ -179,9 +198,9 @@ function new.rlib( name, ... )
 end
 
 /*
-*   new > gmod
-*
-*   @param  : varg ( ... )
+    new > gmod
+
+    @param  : varg ( ... )
 */
 
 function new.gmod( ... )
@@ -189,9 +208,9 @@ function new.gmod( ... )
 end
 
 /*
-*   drop > rlib
-*
-*   @param  : str name
+    drop > rlib
+
+    @param  : str name
 */
 
 function drop.rlib( name )
@@ -200,9 +219,9 @@ function drop.rlib( name )
 end
 
 /*
-*   drop > gmod
-*
-*   @param  : str name
+    drop > gmod
+
+    @param  : str name
 */
 
 function drop.gmod( name )
@@ -210,10 +229,10 @@ function drop.gmod( name )
 end
 
 /*
-*   run > rlib
-*
-*   @param  : str cmd
-*   @param  : varg ( ... )
+    run > rlib
+
+    @param  : str cmd
+    @param  : varg ( ... )
 */
 
 function run.rlib( cmd, ... )
@@ -222,9 +241,9 @@ function run.rlib( cmd, ... )
 end
 
 /*
-*   run > gmod
-*
-*   @param  : varg ( ... )
+    run > gmod
+
+    @param  : varg ( ... )
 */
 
 function run.gmod( ... )
@@ -232,10 +251,10 @@ function run.gmod( ... )
 end
 
 /*
-*   register
-*
-*   @param  : str cmd
-*   @param  : func fn
+    register
+
+    @param  : str cmd
+    @param  : func fn
 */
 
 function register( cmd, fn )
@@ -244,10 +263,10 @@ function register( cmd, fn )
 end
 
 /*
-*   get
-*
-*   @param  : str cmd
-*   @return : func
+    get
+
+    @param  : str cmd
+    @return : func
 */
 
 function get( cmd )
@@ -256,18 +275,18 @@ function get( cmd )
 end
 
 /*
-*   rcc > prepare
-*
-*   takes all of the registered commands through rlib and turns them into
-*   a command usable with rcc
-*
-*   accepts an alternative source table but struct must be the same as the
-*   original.
-*
-*   @call   : rcc.prepare( )
-*
-*   @param  : tbl source
-*   @return : void
+    rcc > prepare
+
+    takes all of the registered commands through rlib and turns them into
+    a command usable with rcc
+
+    accepts an alternative source table but struct must be the same as the
+    original.
+
+    @call   : rcc.prepare( )
+
+    @param  : tbl source
+    @return : void
 */
 
 function prepare( source )
@@ -279,15 +298,17 @@ function prepare( source )
         if v.bInternal then continue end -- for commands like rlib_rnet_reload; otherwise function will be overwritten
 
         if SERVER and ( v.scope == 1 or v.scope == 2 ) then
-            local fn = rcc.get( k )
-            if not fn then fn = v.assoc end
+            local fn                = rcc.get( k )
+                                    if not fn then fn = v.assoc end
             rcc.new.gmod( v.id, fn )
+
             if v.alias then
                 rcc.new.gmod( v.alias, fn )
             end
         elseif CLIENT and ( v.scope == 2 or v.scope == 3 ) then
-            local fn = rcc.get( k )
-            if not fn then fn = v.assoc end
+            local fn                = rcc.get( k )
+                                    if not fn then fn = v.assoc end
+
             rcc.new.gmod( v.id, fn )
             if v.alias then
                 rcc.new.gmod( v.alias, fn )
@@ -309,11 +330,11 @@ function prepare( source )
 end
 
 /*
-*   rcc > source
-*
-*   returns source tbl for commands
-*
-*   @return : tbl
+    rcc > source
+
+    returns source tbl for commands
+
+    @return : tbl
 */
 
 function source( )
@@ -404,7 +425,150 @@ local function rcc_rehash( pl, cmd, args )
 end
 
 /*
-*   rcc > register
+    rcc > check
+
+    returns if a command has a valid registered function
+*/
+
+local function rcc_check( pl, cmd, args )
+
+    /*
+        permissions
+    */
+
+    local ccmd = base.calls:get( 'commands', 'rcc_check' )
+
+    /*
+        scope
+    */
+
+    if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
+        access:deny_consoleonly( pl, mf.name, ccmd.id )
+        return
+    end
+
+    /*
+        perms
+    */
+
+    if not access:bIsRoot( pl ) then
+        access:deny_permission( pl, mf.name, ccmd.id )
+        return
+    end
+
+    /*
+        args
+    */
+
+    local arg_cmd               = __GetArg( args, 1 )
+
+    /*
+        no arg
+    */
+
+    if not arg_cmd then
+        base.con:S          (  )
+        con( 'c',           clr_w, ' Command not provided' )
+        base.con:E          (  )
+        return
+    end
+
+    /*
+        command not found
+    */
+
+    local cmdExists = get( arg_cmd )
+    if not cmdExists then
+        base.con:S          (  )
+        con( 'c',           clr_w, ' Command ', clr_r, arg_cmd, clr_w, ' not registered' )
+        base.con:E          (  )
+        return
+    end
+
+    /*
+        command registered
+    */
+
+    base.con:S          (  )
+    con( 'c',           clr_w, ' Command ', clr_p, arg_cmd, clr_w, ' is registered' )
+    base.con:E          (  )
+
+end
+
+/*
+    rcc > storage
+*/
+
+local function rcc_storage( pl, cmd, args )
+
+    /*
+        permissions
+    */
+
+    local ccmd = base.calls:get( 'commands', 'rcc_storage' )
+
+    /*
+        scope
+    */
+
+    if ( ccmd.scope == 1 and not access:bIsConsole( pl ) ) then
+        access:deny_consoleonly( pl, mf.name, ccmd.id )
+        return
+    end
+
+    /*
+        perms
+    */
+
+    if not access:bIsRoot( pl ) then
+        access:deny_permission( pl, mf.name, ccmd.id )
+        return
+    end
+
+    /*
+        execute
+    */
+
+    local tblStorage        = storage or { }
+    local rCalls            = base._rcalls.commands or { }
+
+    base.con:S              (  )
+
+    local a1_l              = sf( '%-30s',  'Command'       )
+    local a2_l              = sf( '%-30s',  'Name'          )
+    local a3_l              = sf( '%-5s',   '»'             )
+    local a4_l              = sf( '%-35s',  'Function'      )
+
+    con( 'c',               Color( 255, 255, 0 ), a1_l, Color( 255, 255, 0 ),  a2_l, Color( 255, 255, 255 ), a3_l, a4_l )
+    con( 'c', 0 )
+    con( 'c', 1 )
+
+    for k, v in SortedPairs( tblStorage ) do
+
+        local cmd_id        = k
+        local name          = 'Unknown'
+        if rCalls[ k ] then
+            cmd_id          = ( rCalls[ k ] and rCalls[ k ].id ) or k
+            name            = ( rCalls[ k ] and rCalls[ k ].name ) or cmd_id
+        end
+
+        local bHasFunc      = isfunction( v ) and true or false
+        bHasFunc            = helper.util:humanbool( bHasFunc, true )
+
+        local a1_2          = sf( '%-30s',  cmd_id          )
+        local a2_2          = sf( '%-30s',  name            )
+        local a3_2          = sf( '%-5s',  '»'              )
+        local a4_2          = sf( '%-35s',  bHasFunc        )
+
+        con( 'c',           Color( 255, 255, 0 ), a1_2, Color( 255, 255, 0 ), a2_2, Color( 255, 255, 255 ), a3_2, a4_2 )
+    end
+
+    base.con:E              (  )
+
+end
+
+/*
+    rcc > register
 */
 
 function RegisterRCC( bOutput )
@@ -426,16 +590,42 @@ function RegisterRCC( bOutput )
         },
         [ pkg_name .. '_rehash' ] =
         {
-            enabled     = true,
-            warn        = true,
-            id          = g_PackageId( 'rehash' ),
-            name        = 'Rehash commands',
-            desc        = 'reload all module rcc commands',
-            scope       = 1,
-            clr         = Color( 255, 255, 0 ),
-            assoc       = function( ... )
-                            rcc_rehash( ... )
-                        end,
+            enabled         = true,
+            warn            = true,
+            id              = g_PackageId( 'rehash' ),
+            name            = 'Rehash commands',
+            desc            = 'reload all module rcc commands',
+            scope           = 1,
+            clr             = Color( 255, 255, 0 ),
+            assoc           = function( ... )
+                                rcc_rehash( ... )
+                            end,
+        },
+        [ pkg_name .. '_check' ] =
+        {
+            enabled         = true,
+            warn            = true,
+            id              = g_PackageId( 'check' ),
+            name            = 'Check Commands',
+            desc            = 'checks if command is registered with a function',
+            scope           = 1,
+            clr             = Color( 255, 255, 0 ),
+            assoc           = function( ... )
+                                rcc_check( ... )
+                            end,
+        },
+        [ pkg_name .. '_storage' ] =
+        {
+            enabled         = true,
+            warn            = true,
+            id              = g_PackageId( 'storage' ),
+            name            = 'Storage',
+            desc            = 'return storage information on rcc commands',
+            scope           = 1,
+            clr             = Color( 255, 255, 0 ),
+            assoc           = function( ... )
+                                rcc_storage( ... )
+                            end,
         },
     }
 
@@ -460,14 +650,14 @@ hook.Add( pid( 'cmd.register' ), pid( '__rcc.cmd.register' ), RegisterRCC )
     register packages
 */
 
-function pkg:register( )
+function Packages( )
     if not istable( _M ) then return end
     base.package:Register( _M )
 end
-hook.Add( pid( 'pkg.register' ), pid( '__rcc.pkg.register' ), pkg.register )
+hook.Add( pid( 'pkg.register' ), pid( '__rcc.pkg.register' ), Packages )
 
 /*
-*   module info > manifest
+    module info > manifest
 */
 
 function pkg:manifest( )
@@ -475,7 +665,7 @@ function pkg:manifest( )
 end
 
 /*
-*   __tostring
+    __tostring
 */
 
 function pkg:__tostring( )
@@ -483,7 +673,7 @@ function pkg:__tostring( )
 end
 
 /*
-*   create new class
+    create new class
 */
 
 function pkg:loader( class )
@@ -493,7 +683,7 @@ function pkg:loader( class )
 end
 
 /*
-*   __index / manifest declarations
+    __index / manifest declarations
 */
 
 pkg.__manifest =
